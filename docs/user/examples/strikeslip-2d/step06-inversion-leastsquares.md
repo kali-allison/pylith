@@ -1,6 +1,6 @@
-# Step 6: Fault Slip Inversion
+# Step 6: Least Squares Fault Slip Inversion
 
-In this example we do a simple static slip inversion.
+In this example we do a simple static slip inversion using least squares.
 We treat the displacements at the fake GPS stations in Step 4 as the "observations" and use the Green's functions from Step 5 to invert for the fault slip that we prescribed in Step 4.
 
 We use simple generalized inversion method with penalties to minimize the seismic moment.
@@ -35,4 +35,9 @@ $ ./viz/plot_inversion_results.py
 Results of slip inversion in Step 6.
 The thick black line shows the prescribed slip in Step 4.
 The thin colored lines show the slip from the inversion with different penalty factors.
+:::
+
+::{tip}
+You can pass`--no-gui` as a command line argument to the plotting script turn off displaying the plot window.
+This is useful if you do not have a matplotlib GUI backend.
 :::
