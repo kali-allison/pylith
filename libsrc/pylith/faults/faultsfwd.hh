@@ -32,7 +32,9 @@ namespace pylith {
         class FaultCohesive;
         class FaultCohesiveKin;
         class FaultCohesiveImpulses;
+        class FaultCohesiveDyn;
         class AuxiliaryFactoryKinematic;
+        class AuxiliaryFactoryDynamic;
 
         class KinSrc;
         class KinSrcConstRate;
@@ -42,6 +44,12 @@ namespace pylith {
         class KinSrcLiuCos;
         class KinSrcTimeHistory;
         class KinSrcAuxiliaryFactory;
+
+        class FaultRheology;
+        class FrictionStatic;
+        class FrictionSlipWeakening;
+        class AuxiliaryFactoryRheology;
+        class TractionPerturbation;
 
         class TopologyOps;
         class FaultOps;
