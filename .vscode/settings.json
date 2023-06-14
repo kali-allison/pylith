@@ -1,5 +1,5 @@
 {
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "telemetry.enableTelemetry": false,
     "telemetry.enableCrashReporter": false,
     "uncrustify.configPath.linux": "developer/uncrustify.cfg",
@@ -10,7 +10,10 @@
     },
     "files.associations": {
         "*.icc": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "*.tcc": "cpp",
+        "memory_resource": "cpp",
+        "sstream": "cpp"
     },
     "python.formatting.autopep8Args": [
         "-max-line-length",

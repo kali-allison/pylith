@@ -25,6 +25,10 @@ subpkginclude_HEADERS = \
 	FaultCohesiveImpulses.hh \
 	AuxiliaryFactoryKinematic.hh \
 	AuxiliaryFactoryDynamic.hh \
+	AuxiliaryFactoryRheology.hh \
+	FaultRheology.hh \
+	FaultFriction.hh \
+	FrictionStatic.hh \
 	FaultOps.hh \
 	KinSrc.hh \
 	KinSrcStep.hh \

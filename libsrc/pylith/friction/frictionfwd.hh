@@ -27,12 +27,14 @@
 #if !defined(pylith_friction_frictionfwd_hh)
 #define pylith_friction_frictionfwd_hh
 
-namespace pylith {
-  namespace friction {
+namespace pylith
+{
+  namespace friction
+  {
 
-    class FrictionModel;
+    class FaultFriction;
 
-    class StaticFriction;
+    class FrictionStatic;
     class SlipWeakening;
     class SlipWeakeningTime;
     class SlipWeakeningTimeStable;
@@ -42,8 +44,6 @@ namespace pylith {
   } // friction
 } // pylith
 
-
 #endif // pylith_friction_frictionfwd_hh
 
-
-// End of file 
+// End of file
