@@ -23,6 +23,7 @@
  */
 
 #include <portinfo>
+#include <cassert>
 
 #include "OneFaultShearNoSlipDyn.hh" // Implementation of cases
 
@@ -45,6 +46,7 @@
 #include "spatialdata/spatialdb/UserFunctionDB.hh" // USES UserFunctionDB
 #include "spatialdata/geocoords/CSCart.hh"         // USES CSCart
 #include "spatialdata/units/Nondimensional.hh"     // USES Nondimensional
+
 
 namespace pylith {
     class _OneFaultShearNoSlipDyn;
@@ -348,8 +350,8 @@ public:
         // Faults
         data->faults.resize(1);
         { // xpos
-            //pylith::faults::FaultCohesiveKin *fault = new pylith::faults::FaultCohesiveKin();
-            pylith::faults::FaultCohesiveDyn *fault = new pylith::faults::FaultCohesiveDyn();
+            pylith::faults::FaultCohesiveKin *fault = new pylith::faults::FaultCohesiveKin();
+            //pylith::faults::FaultCohesiveDyn *fault = new pylith::faults::FaultCohesiveDyn();
             fault->setCohesiveLabelValue(100);
             fault->setSurfaceLabelName("fault_xpos");
 
