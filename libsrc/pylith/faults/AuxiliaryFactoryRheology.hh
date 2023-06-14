@@ -59,6 +59,6 @@ private:
 
 }; // class AuxiliaryFactoryRheology
 
-#endif // pylith_faults_auxiliaryfactoryelasticity_hh
+#endif // pylith_faults_auxiliaryfactoryrheology_hh
 
 // End of file

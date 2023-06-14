@@ -27,8 +27,10 @@
 #if !defined(pylith_faults_faultsfwd_hh)
 #define pylith_faults_faultsfwd_hh
 
-namespace pylith {
-    namespace faults {
+namespace pylith
+{
+    namespace faults
+    {
         class FaultCohesive;
         class FaultCohesiveKin;
         class FaultCohesiveImpulses;
@@ -46,9 +48,11 @@ namespace pylith {
         class KinSrcAuxiliaryFactory;
 
         class FaultRheology;
+        class FaultFriction;
         class FrictionStatic;
         class FrictionSlipWeakening;
         class AuxiliaryFactoryRheology;
+        class AuxiliaryFactoryFriction;
         class TractionPerturbation;
 
         class TopologyOps;

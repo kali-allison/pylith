@@ -58,7 +58,7 @@ namespace pylith {
     namespace faults {
         class _FaultCohesiveDyn {
             // PUBLIC MEMBERS /////////////////////////////////////////////////////////////////////
-public:
+        public:
 
             static const char* pyreComponent;
 
@@ -74,8 +74,8 @@ public:
 // Default constructor.
 pylith::faults::FaultCohesiveDyn::FaultCohesiveDyn(void) :
     _auxiliaryFactory(new pylith::faults::AuxiliaryFactoryDynamic),
-    _rheology(NULL),
-    _tractionVecPerturbation(NULL),
+                                                           _rheology(NULL),
+                                                           _tractionVecPerturbation(NULL),
     _tractionVecTotal(NULL) {
     pylith::utils::PyreComponent::setName(_FaultCohesiveDyn::pyreComponent);
 } // constructor
@@ -101,7 +101,6 @@ pylith::faults::FaultCohesiveDyn::deallocate(void) {
     _perturbations.clear(); // :TODO: Use shared pointers for earthquake ruptures
 } // deallocate
 
-
 // ------------------------------------------------------------------------------------------------
 // Set fault rheology.
 void
@@ -118,7 +117,7 @@ pylith::faults::FaultCohesiveDyn::getFaultRheology(void) const {}
 // Set kinematic earthquake ruptures.
 void
 pylith::faults::FaultCohesiveDyn::setTractionPerturbations(const char* const * names,
-                                                           const int numNames,
+                                                                const int numNames,
                                                            TractionPerturbation** perturbations,
                                                            const int numPerturbations) {
     PYLITH_METHOD_BEGIN;
