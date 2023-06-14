@@ -26,21 +26,25 @@
 
 #include "OneFaultShearNoSlipDyn.hh" // Implementation of cases
 
-#include "pylith/faults/FaultCohesiveKin.hh" // USES FaultCohesiveKin
-#include "pylith/faults/KinSrcStep.hh" // USES KinSrcStep
-#include "pylith/problems/TimeDependent.hh" // USES TimeDependent
-#include "pylith/materials/Elasticity.hh" // USES Elasticity
+#include "pylith/faults/FaultCohesiveKin.hh"             // TODO: REMOVE
+#include "pylith/faults/FaultCohesiveDyn.hh"             // USES FaultCohesiveDyn
+#include "pylith/faults/FaultRheology.hh"                // USES FaultRheology
+#include "pylith/faults/FaultFriction.hh"                // USES FaultFriction
+#include "pylith/faults/FrictionStatic.hh"               // USES FrictionStatic
+#include "pylith/faults/KinSrcStep.hh"                   // USES KinSrcStep
+#include "pylith/problems/TimeDependent.hh"              // USES TimeDependent
+#include "pylith/materials/Elasticity.hh"                // USES Elasticity
 #include "pylith/materials/IsotropicLinearElasticity.hh" // USES IsotropicLinearElasticity
-#include "pylith/bc/DirichletUserFn.hh" // USES DirichletUserFn
-#include "pylith/bc/NeumannUserFn.hh" // USES NeumannUserFn
+#include "pylith/bc/DirichletUserFn.hh"                  // USES DirichletUserFn
+#include "pylith/bc/NeumannUserFn.hh"                    // USES NeumannUserFn
 
-#include "pylith/topology/Mesh.hh" // USES pylith::topology::Mesh::cells_label_name
+#include "pylith/topology/Mesh.hh"  // USES pylith::topology::Mesh::cells_label_name
 #include "pylith/topology/Field.hh" // USES pylith::topology::Field::Discretization
 #include "pylith/utils/journals.hh" // USES pythia::journal::debug_t
 
 #include "spatialdata/spatialdb/UserFunctionDB.hh" // USES UserFunctionDB
-#include "spatialdata/geocoords/CSCart.hh" // USES CSCart
-#include "spatialdata/units/Nondimensional.hh" // USES Nondimensional
+#include "spatialdata/geocoords/CSCart.hh"         // USES CSCart
+#include "spatialdata/units/Nondimensional.hh"     // USES Nondimensional
 
 namespace pylith {
     class _OneFaultShearNoSlipDyn;
@@ -105,6 +109,18 @@ class pylith::_OneFaultShearNoSlipDyn {
         return "m";
     } // slip_units
 
+    // static coefficient of friction
+    static double static_coefficient(const double x,
+                          const double y)
+    {
+        return 0.6;
+    } // static_coefficient
+
+    static const char *friction_units(void)
+    {
+        return "none";
+    } // friction_units
+
     // Solution subfields.
     static double strain_xx(void) {
         return 0.0;
@@ -147,23 +163,23 @@ class pylith::_OneFaultShearNoSlipDyn {
 
     static
     void boundary_tractions(const PylithInt dim,
-                            const PylithInt numS,
-                            const PylithInt numA,
-                            const PylithInt sOff[],
-                            const PylithInt sOff_x[],
-                            const PylithScalar s[],
-                            const PylithScalar s_t[],
-                            const PylithScalar s_x[],
-                            const PylithInt aOff[],
-                            const PylithInt aOff_x[],
-                            const PylithScalar a[],
-                            const PylithScalar a_t[],
-                            const PylithScalar a_x[],
-                            const PylithReal t,
-                            const PylithReal x[],
-                            const PylithReal n[],
-                            const PylithInt numConstants,
-                            const PylithScalar constants[],
+                                   const PylithInt numS,
+                                   const PylithInt numA,
+                                   const PylithInt sOff[],
+                                   const PylithInt sOff_x[],
+                                   const PylithScalar s[],
+                                   const PylithScalar s_t[],
+                                   const PylithScalar s_x[],
+                                   const PylithInt aOff[],
+                                   const PylithInt aOff_x[],
+                                   const PylithScalar a[],
+                                   const PylithScalar a_t[],
+                                   const PylithScalar a_x[],
+                                   const PylithReal t,
+                                   const PylithReal x[],
+                                   const PylithReal n[],
+                                   const PylithInt numConstants,
+                                   const PylithScalar constants[],
                             PylithScalar r0[]) {
         assert(r0);
         const double mu = density(x[0], x[1]) * vs(x[0], x[1]) * vs(x[0], x[1]);//x[0] and x[1] are x and y coordinates
@@ -249,9 +265,10 @@ public:
         data->faultAuxDB.addValue("initiation_time", initiation_time, time_units());
         data->faultAuxDB.addValue("final_slip_opening", finalslip_opening, slip_units());
         data->faultAuxDB.addValue("final_slip_left_lateral", finalslip_leftlateral, slip_units());
+        data->faultAuxDB.addValue("static_coefficient", static_coefficient, friction_units());
         data->faultAuxDB.setCoordSys(data->cs);
 
-        data->faultNumAuxSubfields = 1; 
+        data->faultNumAuxSubfields = 1;
         static const char* _faultAuxSubfields[1] = { "slip" };
         data->faultAuxSubfields = _faultAuxSubfields;
         static const pylith::topology::Field::Discretization _faultAuxDiscretizations[1] = {
@@ -331,14 +348,22 @@ public:
         // Faults
         data->faults.resize(1);
         { // xpos
-            pylith::faults::FaultCohesiveKin* fault = new pylith::faults::FaultCohesiveKin();
+            //pylith::faults::FaultCohesiveKin *fault = new pylith::faults::FaultCohesiveKin();
+            pylith::faults::FaultCohesiveDyn *fault = new pylith::faults::FaultCohesiveDyn();
             fault->setCohesiveLabelValue(100);
             fault->setSurfaceLabelName("fault_xpos");
 
-            const int numRuptures = 1;
-            const char* ruptureNames[1] = { "rupture" };
-            pylith::faults::KinSrc* ruptures[1] = { data->kinSrc };
-            fault->setEqRuptures(ruptureNames, numRuptures, ruptures, numRuptures);
+            // create static friction rheology and assign to fault
+            pylith::faults::FaultRheology *rheology = new pylith::faults::FrictionStatic();
+            //assert(rheology);
+            //fault->setFaultRheology(rheology);
+
+            // old kinematic set up
+            // const int numRuptures = 1;
+            // const char *ruptureNames[1] = {"rupture"};
+            // pylith::faults::KinSrc *ruptures[1] = {data->kinSrc};
+            // fault->setEqRuptures(ruptureNames, numRuptures, ruptures, numRuptures);
+
             data->faults[0] = fault;
         } // xpos
 
