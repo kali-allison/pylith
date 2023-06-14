@@ -58,6 +58,8 @@
 
 #include "pylith/utils/types.hh"
 
+#include <cassert> // USES assert()
+
 class pylith::fekernels::FaultRheology {
     // PUBLIC TYPEDEFS ////////////////////////////////////////////////////////////////////////////
 public:

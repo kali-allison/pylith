@@ -62,6 +62,8 @@
 
 #include "pylith/utils/types.hh"
 
+#include <cassert> // USES assert()
+
 class pylith::fekernels::FrictionStatic {
     // PUBLIC STRUCTS /////////////////////////////////////////////////////////////////////////////
 public:

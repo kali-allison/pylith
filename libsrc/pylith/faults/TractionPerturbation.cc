@@ -334,6 +334,11 @@ pylith::faults::TractionPerturbation::_setTractionKernel(void) {
     PYLITH_METHOD_END;
 } // setTractionKernel
 
+// ------------------------------------------------------------------------------------------------
+// Set constants used in finite-element integrations.
+void
+pylith::faults::TractionPerturbation::_setFEConstants(const pylith::topology::Field& auxField) const {}
+
 
 // ------------------------------------------------------------------------------------------------
 // Preinitialize earthquake source. Set names/sizes of auxiliary subfields.

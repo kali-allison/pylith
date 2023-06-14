@@ -45,6 +45,10 @@ libpylith_la_SOURCES = \
 	faults/FaultCohesiveImpulses.cc \
 	faults/AuxiliaryFactoryKinematic.cc \
 	faults/AuxiliaryFactoryDynamic.cc \
+	faults/AuxiliaryFactoryRheology.cc \
+	faults/FaultRheology.cc \
+	faults/FaultFriction.cc \
+	faults/FrictionStatic.cc \
 	faults/KinSrc.cc \
 	faults/KinSrcStep.cc \
 	faults/KinSrcRamp.cc \

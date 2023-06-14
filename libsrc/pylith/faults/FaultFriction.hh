@@ -51,6 +51,11 @@ public:
     /// Add rheology subfields to auxiliary field.
     virtual void addAuxiliarySubfields(void) = 0;
 
+    // PRIVATE MEMBERS ////////////////////////////////////////////////////////////////////////////
+private:
+
+    pylith::faults::AuxiliaryFactoryRheology* _auxiliaryFactory; ///< Factory for creating auxiliary subfields.
+
     // NOT IMPLEMENTED ////////////////////////////////////////////////////////////////////////////
 private:
     FaultFriction(const FaultFriction &);                  ///< Not implemented.
