@@ -20,6 +20,7 @@
 
 #include "pylith/faults/FaultFriction.hh" // implementation of object methods
 
+#include "pylith/faults/AuxiliaryFactoryRheology.hh" // USES AuxiliaryFactoryRheology
 #include "pylith/feassemble/Integrator.hh" // USES NEW_JACOBIAN_NEVER
 
 #include "pylith/utils/error.hh"    // USES PYLITH_METHOD_BEGIN/END
@@ -40,6 +41,21 @@ pylith::faults::FaultFriction::~FaultFriction(void)
 
 // ------------------------------------------------------------------------------------------------
 // Deallocate PETSc and local data structures.
-void pylith::faults::FaultFriction::deallocate(void) {}
+void
+pylith::faults::FaultFriction::deallocate(void) {}
+
+// ------------------------------------------------------------------------------------------------
+// Add rheology subfields to auxiliary field.
+void
+pylith::faults::FaultFriction::addAuxiliarySubfields(void) {
+    PYLITH_METHOD_BEGIN;
+    PYLITH_COMPONENT_DEBUG("addAuxiliarySubfields(void)");
+
+    // :ATTENTION: The order for adding subfields must match the order of the auxiliary fields in the point-wise
+    // functions (kernels).
+    _auxiliaryFactory->addCohesion();
+
+    PYLITH_METHOD_END;
+} // addAuxiliarySubfields
 
 // End of file
