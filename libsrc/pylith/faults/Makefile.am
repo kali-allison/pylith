@@ -22,6 +22,7 @@ include $(top_srcdir)/subpackage.am
 subpkginclude_HEADERS = \
 	FaultCohesive.hh \
 	FaultCohesiveKin.hh \
+	FaultCohesiveDyn.hh \
 	FaultCohesiveImpulses.hh \
 	AuxiliaryFactoryKinematic.hh \
 	AuxiliaryFactoryDynamic.hh \

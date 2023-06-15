@@ -58,7 +58,7 @@
 // Include directives ---------------------------------------------------
 #include "fekernelsfwd.hh" // forward declarations
 
-#include "pylith/fekernels/FaultRheology.hh" // USES FaultRheology
+#include "pylith/fekernels/FaultFriction.hh" // USES FaultFriction
 
 #include "pylith/utils/types.hh"
 
