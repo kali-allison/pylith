@@ -27,7 +27,6 @@
 
 #include "OneFaultShearNoSlipDyn.hh" // Implementation of cases
 
-#include "pylith/faults/FaultCohesiveKin.hh"             // TODO: REMOVE
 #include "pylith/faults/FaultCohesiveDyn.hh"             // USES FaultCohesiveDyn
 #include "pylith/faults/FaultRheology.hh"                // USES FaultRheology
 #include "pylith/faults/FaultFriction.hh"                // USES FaultFriction
@@ -350,21 +349,14 @@ public:
         // Faults
         data->faults.resize(1);
         { // xpos
-            pylith::faults::FaultCohesiveKin *fault = new pylith::faults::FaultCohesiveKin();
-            //pylith::faults::FaultCohesiveDyn *fault = new pylith::faults::FaultCohesiveDyn();
+            pylith::faults::FaultCohesiveDyn *fault = new pylith::faults::FaultCohesiveDyn();
             fault->setCohesiveLabelValue(100);
             fault->setSurfaceLabelName("fault_xpos");
 
             // create static friction rheology and assign to fault
             pylith::faults::FaultRheology *rheology = new pylith::faults::FrictionStatic();
-            //assert(rheology);
+            assert(rheology);
             fault->setFaultRheology(rheology);
-
-            // old kinematic set up
-            // const int numRuptures = 1;
-            // const char *ruptureNames[1] = {"rupture"};
-            // pylith::faults::KinSrc *ruptures[1] = {data->kinSrc};
-            // fault->setEqRuptures(ruptureNames, numRuptures, ruptures, numRuptures);
 
             data->faults[0] = fault;
         } // xpos
