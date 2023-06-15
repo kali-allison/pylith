@@ -60,8 +60,8 @@
  * @param[out] f0 [dim].
  */
 
-#if !defined(pylith_fekernels_faultcohesivekin_hh)
-#define pylith_fekernels_faultcohesivekin_hh
+#if !defined(pylith_fekernels_faultcohesivedyn_hh)
+#define pylith_fekernels_faultcohesivedyn_hh
 
 // Include directives ---------------------------------------------------
 #include "fekernelsfwd.hh" // forward declarations

@@ -31,7 +31,7 @@
 #include "pylith/topology/FieldOps.hh" // USES FieldOps::checkDiscretization()
 #include "pylith/topology/VisitorMesh.hh" // USES VecVisitorMesh
 
-// #include "pylith/fekernels/FaultCohesiveDyn.hh" // USES FaultCohesiveDyn
+#include "pylith/fekernels/FaultCohesiveDyn.hh" // USES FaultCohesiveDyn
 
 #include "pylith/utils/EventLogger.hh" // USES EventLogger
 #include "pylith/utils/journals.hh" // USES PYLITH_COMPONENT_*
