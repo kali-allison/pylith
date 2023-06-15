@@ -75,7 +75,7 @@ namespace pylith {
         class FaultCohesiveKin;
         class FaultCohesiveDyn;
 
-        class FaultRheology;
+        class FaultFriction;
         class FrictionStatic;
         class FrictionSlipWeakening;
 

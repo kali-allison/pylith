@@ -60,7 +60,7 @@
 
 #include <cassert> // USES assert()
 
-class pylith::fekernels::FaultRheology {
+class pylith::fekernels::FaultFriction {
     // PUBLIC TYPEDEFS ////////////////////////////////////////////////////////////////////////////
 public:
 
