@@ -50,8 +50,8 @@
  * @param[out] f0 [dim].
  */
 
-#if !defined(pylith_fekernels_faultrheology_hh)
-#define pylith_fekernels_faultrheology_hh
+#if !defined(pylith_fekernels_faultfriction_hh)
+#define pylith_fekernels_faultfriction_hh
 
 // Include directives ---------------------------------------------------
 #include "fekernelsfwd.hh" // forward declarations
