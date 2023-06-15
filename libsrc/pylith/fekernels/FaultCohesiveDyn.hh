@@ -28,7 +28,7 @@
  *
  * LHS Residual
  *
- *  - f0u^+ = -\lambda
+ *  - f0u^+ = -\lambda - friction
  *  - f0u^- = +\lambda
  *  - f0\lambda = d - u^+ + u^-
  *
