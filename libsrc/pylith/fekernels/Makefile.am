@@ -36,6 +36,9 @@ subpkginclude_HEADERS = \
 	NeumannTimeDependent.hh \
 	AbsorbingDampers.hh \
 	FaultCohesiveKin.hh \
+	FaultCohesiveDyn.hh \
+	FaultFriction.hh \
+	FrictionStatic.hh \
 	IsotropicLinearPoroelasticity.hh \
 	Poroelasticity.hh 
 	
