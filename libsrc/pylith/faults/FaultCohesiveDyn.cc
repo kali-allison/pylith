@@ -104,14 +104,16 @@ pylith::faults::FaultCohesiveDyn::deallocate(void) {
 // ------------------------------------------------------------------------------------------------
 // Set fault rheology.
 void
-pylith::faults::FaultCohesiveDyn::setFaultRheology(pylith::faults::FaultRheology* const rheology) {}
-
+pylith::faults::FaultCohesiveDyn::setFaultRheology(pylith::faults::FaultRheology* const rheology) {
+    _rheology = rheology;
+} // setFaultRheology
 
 // ------------------------------------------------------------------------------------------------
 // Get fault rheology.
 pylith::faults::FaultRheology*
-pylith::faults::FaultCohesiveDyn::getFaultRheology(void) const {}
-
+pylith::faults::FaultCohesiveDyn::getFaultRheology(void) const{
+    return _rheology;
+} // getFaultRheology
 
 // ------------------------------------------------------------------------------------------------
 // Set kinematic earthquake ruptures.
