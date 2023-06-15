@@ -112,7 +112,7 @@ public:
      *
      */
     static inline
-    void frictionCoefficient(const pylith::fekernels::FaultRheology::SlipContext& slipContext,
+    void frictionCoefficient(const pylith::fekernels::FaultFriction::SlipContext& slipContext,
                              void* rheologyContext,
                              PylithReal* coefficient) {
         Context* context = (Context*)(rheologyContext);
