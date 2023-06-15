@@ -358,7 +358,7 @@ public:
             // create static friction rheology and assign to fault
             pylith::faults::FaultRheology *rheology = new pylith::faults::FrictionStatic();
             //assert(rheology);
-            //fault->setFaultRheology(rheology);
+            fault->setFaultRheology(rheology);
 
             // old kinematic set up
             // const int numRuptures = 1;
