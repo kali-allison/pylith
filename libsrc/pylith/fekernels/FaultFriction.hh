@@ -90,6 +90,99 @@ public:
     // PUBLIC METHODS /////////////////////////////////////////////////////////////////////////////
 public:
 
+// --------------------------------------------------------------------------------------------
+// create slip context
+    static inline
+    void setSlipContext(SlipContext* context,
+                    const PylithInt dim,
+                    const PylithInt numS,
+                    const PylithInt numA,
+                    const PylithInt sOff[],
+                    const PylithInt sOff_x[],
+                    const PylithScalar s[],
+                    const PylithScalar s_t[],
+                    const PylithScalar s_x[],
+                    const PylithInt aOff[],
+                    const PylithInt aOff_x[],
+                    const PylithScalar a[],
+                    const PylithScalar a_t[],
+                    const PylithScalar a_x[],
+                    const PylithReal t,
+                    const PylithScalar x[],
+                    const PylithInt numConstants,
+                    const PylithScalar constants[],
+                    const pylith::fekernels::TensorOps& tensorOps) {
+        assert(context);
+        
+        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+
+        const PylithInt i_disp = 0;
+        const PylithInt sOffDispN = sOff[i_disp];
+        const PylithInt sOffDispP = sOffDispN+spaceDim;
+        const PylithInt fOffLagrange = 0;
+
+        // displacement on + and - sides of fault
+        const PylithScalar* dispN = &s[sOffDispN];
+        const PylithScalar* dispP = &s[sOffDispP];
+
+        // rate on + and - sides of fault
+        const PylithScalar* velN = &s_t[sOffDispN];
+        const PylithScalar* velP = &s_t[sOffDispP];
+
+        context->t = t;
+        context->slip = dispP - dispN;
+        context->slipRate = velP - velN;
+    } // setSlipContext
+
+    // --------------------------------------------------------------------------------------------
+// create friction context
+    static inline
+    void setFrictionContext(FrictionContext* context,
+                    const PylithInt dim,
+                    const PylithInt numS,
+                    const PylithInt numA,
+                    const PylithInt sOff[],
+                    const PylithInt sOff_x[],
+                    const PylithScalar s[],
+                    const PylithScalar s_t[],
+                    const PylithScalar s_x[],
+                    const PylithInt aOff[],
+                    const PylithInt aOff_x[],
+                    const PylithScalar a[],
+                    const PylithScalar a_t[],
+                    const PylithScalar a_x[],
+                    const PylithReal t,
+                    const PylithScalar x[],
+                    const PylithInt numConstants,
+                    const PylithScalar constants[],
+                    const pylith::fekernels::TensorOps& tensorOps) {
+        assert(context);
+
+        const PylithInt i_cohesion = numA-5;
+        const PylithInt i_tractionNormal = numA-4;
+        const PylithInt i_slipRate = numA-3;
+        const PylithInt i_opening = numA-2;
+        const PylithInt i_openFreeSurface = numA-1;
+
+        assert(a);
+        assert(aOff);
+        assert(aOff[i_cohesion] >= 0);
+        assert(aOff[i_tractionNormal] >= 0);
+        assert(aOff[i_slipRate] >= 0);
+        assert(aOff[i_opening] >= 0);
+        assert(aOff[i_openFreeSurface] >= 0);
+
+        context->cohesion = a[aOff[i_cohesion]];assert(context->cohesion >= 0.0);
+        context->tractionNormal = a[aOff[i_tractionNormal]];assert(context->tractionNormal >= 0.0);
+        PylithReal slipRate0 = a[aOff[i_slipRate]];assert(slipRate0 >= 0.0);
+        context->slipRate[0] = slipRate0;
+        PylithReal slipRate1 = a[aOff[i_slipRate]+1];assert(slipRate1 >= 0.0);
+        context->slipRate[1] = slipRate1;
+        context->opening = a[aOff[i_opening]];assert(context->opening >= 0.0);
+        context->openFreeSurface = a[aOff[i_openFreeSurface]];assert(context->openFreeSurface >= 0.0);
+
+    } // setFrictionContext
+
     // --------------------------------------------------------------------------------------------
     /** Compute friction traction.
      */
@@ -153,7 +246,60 @@ public:
         tractionFriction[2] = 0.0;
     } // frictionDir3D
 
-}; // FaultRheology
+// --------------------------------------------------------------------------------------------
+    /** f0 function for elasticity equation: f0u = +\lambda (neg side).
+     *
+     * Solution fields: [disp(dim), ..., lagrange(dim)]
+     */
+    static inline
+    void f0u_neg(const PylithInt dim,
+                 const PylithInt numS,
+                 const PylithInt numA,
+                 const PylithInt sOff[],
+                 const PylithInt sOff_x[],
+                 const PylithScalar s[],
+                 const PylithScalar s_t[],
+                 const PylithScalar s_x[],
+                 const PylithInt aOff[],
+                 const PylithInt aOff_x[],
+                 const PylithScalar a[],
+                 const PylithScalar a_t[],
+                 const PylithScalar a_x[],
+                 const PylithReal t,
+                 const PylithScalar x[],
+                 const PylithReal n[],
+                 const PylithInt numConstants,
+                 const PylithScalar constants[],
+                 PylithScalar f0[]) {
+        assert(sOff);
+        assert(s);
+        assert(f0);
+
+        assert(numS >= 2);
+
+        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+
+        const PylithInt fOffN = 0;
+        const PylithInt sOffLagrange = sOff[numS-1];
+        const PylithScalar* lagrange = &s[sOffLagrange];
+
+        pylith::fekernels::FaultFriction::SlipContext slipContext;
+        pylith::fekernels::FaultFriction::setSlipContext(&slipContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
+            t, x, numConstants, constants, pylith::fekernels::FaultFriction::???);
+
+        pylith::fekernels::FaultFriction::FrictionContext frictionContext;
+        pylith::fekernels::FaultFriction::setFrictionContext(&frictionContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
+            t, x, numConstants, constants, pylith::fekernels::FaultFriction::???);
+
+        PylithReal tractionFriction = 0.0;
+        friction(slipContext,frictionContext,rheologyContext,frictionCoefFn, frictionDirFn,&tractionFriction);
+
+        for (PylithInt i = 0; i < spaceDim; ++i) {
+            f0[fOffN+i] += tractionFriction[i];
+        } // for
+    } // f0u_neg
+
+}; // FaultFriction
 
 #endif // pylith_fekernels_faultrheology_hh
 
