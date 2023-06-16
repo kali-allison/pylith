@@ -116,8 +116,15 @@ public:
         const PylithInt sOffLagrange = sOff[numS-1];
         const PylithScalar* lagrange = &s[sOffLagrange];
 
+        pylith::fekernels::FaultFriction::SlipContext slipContext;
+        pylith::fekernels::FaultFriction::FrictionContext frictionContext;
+        pylith::fekernels::FaultFriction::setContext(&frictionContext);
+
+        PylithReal tractionFriction = 0.0;
+        friction(slipContext,frictionContext,rheologyContext,frictionCoefFn, frictionDirFn,&tractionFriction);
+
         for (PylithInt i = 0; i < spaceDim; ++i) {
-            f0[fOffN+i] += +lagrange[i];
+            f0[fOffN+i] += tractionFriction[i] - lagrange[i];
         } // for
     }
 
