@@ -251,32 +251,12 @@ public:
         const PylithScalar* dispN = &s[sOffDispN];
         const PylithScalar* dispP = &s[sOffDispP];
 
-        switch (spaceDim) {
-        case 2: {
-            const PylithInt _spaceDim = 2;
-            const PylithScalar tanDir[2] = {-n[1], n[0] };
-            for (PylithInt i = 0; i < _spaceDim; ++i) {
-                const PylithScalar slipXY = n[i]*slip[0] + tanDir[i]*slip[1];
-                f0[fOffLagrange+i] += -dispP[i] + dispN[i] + slipXY;
-            } // for
-            break;
-        } // case 2
-        case 3: {
-            const PylithInt _spaceDim = 3;
-            const PylithScalar* refDir1 = &constants[0];
-            const PylithScalar* refDir2 = &constants[3];
-            PylithScalar tanDir1[3], tanDir2[3];
-            pylith::fekernels::BoundaryDirections::tangential_directions(tanDir1, tanDir2, refDir1, refDir2, n);
+        const PylithInt sOffLagrange = sOff[numS-1];
+        const PylithScalar* lagrange = &s[sOffLagrange];
 
-            for (PylithInt i = 0; i < _spaceDim; ++i) {
-                const PylithScalar slipXYZ = n[i]*slip[0] + tanDir1[i]*slip[1] + tanDir2[i]*slip[2];
-                f0[fOffLagrange+i] += -dispP[i] + dispN[i] + slipXYZ;
-            } // for
-            break;
-        } // case 3
-        default:
-            assert(0);
-        } // switch
+        for (PylithInt i = 0; i < spaceDim; ++i) {
+                f0[fOffLagrange+i] += lagrange[i] * (dispP[i] - dispN[i]);
+        } // for
     }
 
     // --------------------------------------------------------------------------------------------
