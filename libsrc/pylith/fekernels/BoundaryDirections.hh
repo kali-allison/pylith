@@ -52,10 +52,11 @@ public:
         } // for
     } // toXY
 
-    /** Transform values from (tangential 1, tangential 2, normal) to (x, y, z).
-     *
-     * @param[out] valueXY Values in xyz coordinate system.
-     * @param[in] valuesTN Values in tagential1-tangengt2-normal coordinate system.
+    /** Transform values from (x, y, z) to (tangential 1, tangential 2, normal).
+     * valueXY Values in xyz coordinate system.
+     * valuesTN Values in tagential1-tangengt2-normal coordinate system.
+     * @param[out] valuesTN Values in tagential1-tangengt2-normal coordinate system.
+     * @param[in] valueXY Values in xyz coordinate system.
      * @param[in] normalDir Normal direction unit vector.
      */
     static inline
@@ -72,12 +73,12 @@ public:
         valuesTN[0] = valuesXYZ[0]*tanDir1[0] + valuesXYZ[1]*tanDir1[1] + valuesXYZ[2]*tanDir1[2];
         valuesTN[1] = valuesXYZ[0]*tanDir2[0] + valuesXYZ[1]*tanDir2[1] + valuesXYZ[2]*tanDir2[2];
         valuesTN[2] = valuesXYZ[0]*normalDir[0] + valuesXYZ[1]*normalDir[1] + valuesXYZ[2]*normalDir[2];
-    } // toXYZ
+    } // toTN3D
 
     /** Transform values from (x,y) to (tangential, normal).
      *
-     * @param[out] valueXY Values in xy coordinate system.
-     * @param[in] valuesTN Values in tagential-normal coordinate system.
+     * @param[out] valuesTN Values in tagential-normal coordinate system.
+     * @param[in] valueXY Values in xy coordinate system.
      * @param[in] normalDir Normal direction unit vector.
      */
     static inline
@@ -87,9 +88,9 @@ public:
         const PylithInt _dim = 2;
         const PylithReal tanDir[2] = {-normalDir[1], normalDir[0] };
 
-        valuesTN[0] = valuesTN[0]*tanDir[0] + valuesTN[1]*tanDir[1];
-        valuesTN[1] = valuesTN[0]*normalDir[0] + valuesTN[1]*normalDir[1];
-    } // toXY
+        valuesTN[0] = valuesXY[0]*tanDir[0] + valuesXY[1]*tanDir[1];
+        valuesTN[1] = valuesXY[0]*normalDir[0] + valuesXY[1]*normalDir[1];
+    } // toTN
 
     /** Transform values from (tangential 1, tangential 2, normal) to (x, y, z).
      *

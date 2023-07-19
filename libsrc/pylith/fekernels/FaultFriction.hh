@@ -156,7 +156,6 @@ public:
         context->velP = &s_t[sOffDispP];
         
         // the lagrange multipliers are the tractions on the fault
-        const PylithInt fOffN = 0;
         const PylithInt sOffLagrange = sOff[numS-1];
         const PylithScalar* lagrangeGlobal = &s[sOffLagrange];
         context->tractionGlobal = &s[sOffLagrange];
