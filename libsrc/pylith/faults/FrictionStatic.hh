@@ -51,8 +51,11 @@ public:
     /// Add rheology subfields to auxiliary field.
     void addAuxiliarySubfields(void);
 
-    /// Get friction coefficient
-    void getFrictionCoefficient(void);
+    // return residual kernal f0u_neg
+    PetscBdPointFunc getF0uNegKernel();
+
+    // return residual kernal f0u_pos
+    PetscBdPointFunc getF0uPosKernel();
 
     // PRIVATE MEMBERS ////////////////////////////////////////////////////////////////////////////
 private:

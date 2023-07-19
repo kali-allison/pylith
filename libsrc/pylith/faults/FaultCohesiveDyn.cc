@@ -354,14 +354,17 @@ pylith::faults::FaultCohesiveDyn::_setKernelsResidual(pylith::feassemble::Integr
     typedef pylith::feassemble::IntegratorInterface integrator_t;
 
     std::vector<ResidualKernels> kernels;
+    //f0u_neg = faultRheology->getF0uNegKernel()
+    //f0u_pos = faultRheology->getF0uPosKernel()
+    //f0l kernel that enforces traction * slip_opening = 0; traction only = 0 if slip opening > 0
     switch (_formulation) {
     case pylith::problems::Physics::QUASISTATIC: {
         // Elasticity equation (displacement) for negative side of the fault.
-        const PetscBdPointFunc f0u_neg = pylith::fekernels::FaultCohesiveDyn::f0u_neg;
+        const PetscBdPointFunc f0u_neg = _rheology->getF0uNegKernel();
         const PetscBdPointFunc f1u_neg = NULL;
 
         // Elasticity equation (displacement) for positive side of the fault.
-        const PetscBdPointFunc f0u_pos = pylith::fekernels::FaultCohesiveDyn::f0u_pos;
+        const PetscBdPointFunc f0u_neg = _rheology->getF0uPosKernel();
         const PetscBdPointFunc f1u_pos = NULL;
 
         // Fault slip constraint equation.

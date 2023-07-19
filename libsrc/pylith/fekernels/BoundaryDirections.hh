@@ -54,6 +54,45 @@ public:
 
     /** Transform values from (tangential 1, tangential 2, normal) to (x, y, z).
      *
+     * @param[out] valueXY Values in xyz coordinate system.
+     * @param[in] valuesTN Values in tagential1-tangengt2-normal coordinate system.
+     * @param[in] normalDir Normal direction unit vector.
+     */
+    static inline
+    void toTN3D(PylithReal valuesTN[],
+               const PylithReal valuesXYZ[],
+               const PylithReal refDir1[],
+               const PylithReal refDir2[],
+               const PylithReal normalDir[]) {
+        const PylithInt _dim = 3;
+
+        PylithScalar tanDir1[3], tanDir2[3];
+        BoundaryDirections::tangential_directions(tanDir1, tanDir2, refDir1, refDir2, normalDir);
+
+        valuesTN[0] = valuesXYZ[0]*tanDir1[0] + valuesXYZ[1]*tanDir1[1] + valuesXYZ[2]*tanDir1[2];
+        valuesTN[1] = valuesXYZ[0]*tanDir2[0] + valuesXYZ[1]*tanDir2[1] + valuesXYZ[2]*tanDir2[2];
+        valuesTN[2] = valuesXYZ[0]*normalDir[0] + valuesXYZ[1]*normalDir[1] + valuesXYZ[2]*normalDir[2];
+    } // toXYZ
+
+    /** Transform values from (x,y) to (tangential, normal).
+     *
+     * @param[out] valueXY Values in xy coordinate system.
+     * @param[in] valuesTN Values in tagential-normal coordinate system.
+     * @param[in] normalDir Normal direction unit vector.
+     */
+    static inline
+    void toTN(PylithReal valuesTN[],
+              const PylithReal valuesXY[],
+              const PylithReal normalDir[]) {
+        const PylithInt _dim = 2;
+        const PylithReal tanDir[2] = {-normalDir[1], normalDir[0] };
+
+        valuesTN[0] = valuesTN[0]*tanDir[0] + valuesTN[1]*tanDir[1];
+        valuesTN[1] = valuesTN[0]*normalDir[0] + valuesTN[1]*normalDir[1];
+    } // toXY
+
+    /** Transform values from (tangential 1, tangential 2, normal) to (x, y, z).
+     *
      * @param[out] valueXYZ Values in xyz coordinate system.
      * @param[in] valuesTN Values in tagential-normal coordinate system.
      * @param[in] refDir1 Reference direction 1.
