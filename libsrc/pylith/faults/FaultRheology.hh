@@ -84,6 +84,14 @@ public:
     virtual
     void updateKernelConstants(pylith::real_array* kernelConstants,
                                const PylithReal dt) const;
+    
+    /// Get f0u for negative side of fault.
+    virtual
+    PetscBdPointFunc getF0uNegKernel(void) const = 0;
+
+    /// Get f0u for positive side of fault.
+    virtual
+    PetscBdPointFunc getF0uPosKernel(void) const = 0;
 
     // PROTECTED MEMBERS //////////////////////////////////////////////////////////////////////////
 

@@ -51,11 +51,11 @@ public:
     /// Add rheology subfields to auxiliary field.
     void addAuxiliarySubfields(void);
 
-    // return residual kernal f0u_neg
-    PetscBdPointFunc getF0uNegKernel();
+    /// Get f0u for negative side of fault.
+    PetscBdPointFunc getF0uNegKernel(void) const;
 
-    // return residual kernal f0u_pos
-    PetscBdPointFunc getF0uPosKernel();
+    /// Get f0u for positive side of fault.
+    PetscBdPointFunc getF0uPosKernel(void) const;
 
     // PRIVATE MEMBERS ////////////////////////////////////////////////////////////////////////////
 private:
