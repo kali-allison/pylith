@@ -20,6 +20,9 @@
 
 #include "FaultCohesiveDyn.hh" // implementation of object methods
 
+#include "pylith/faults/FaultRheology.hh" // USES TractionPerturbation
+#include "pylith/faults/FaultFriction.hh" // TRIAL
+#include "pylith/faults/FrictionStatic.hh" // TRIAL
 #include "pylith/faults/TractionPerturbation.hh" // USES TractionPerturbation
 #include "pylith/faults/AuxiliaryFactoryDynamic.hh" // USES AuxiliaryFactoryDynamic
 #include "pylith/feassemble/IntegratorInterface.hh" // USES IntegratorInterface
@@ -319,9 +322,13 @@ pylith::faults::FaultCohesiveDyn::_updateTractionPerturbation(pylith::topology::
     pylith::topology::VecVisitorMesh auxiliaryVisitor(*auxiliaryField);
     PylithScalar* auxiliaryArray = auxiliaryVisitor.localArray();
 
+    const PetscInt numSubfields = 1;
+    PetscInt subfieldIndices[numSubfields];
+    subfieldIndices[0] = auxiliaryField->getSubfieldInfo("perturbation_traction").index;
+
     const PylithScalar* tractionArray = NULL;
     err = VecGetArrayRead(_tractionVecTotal, &tractionArray);PYLITH_CHECK_ERROR(err);
-
+    
     for (PetscInt point = pStart, iSlip = 0; point < pEnd; ++point) {
         for (PetscInt iSubfield = 0; iSubfield < numSubfields; ++iSubfield) {
             const PetscInt subfieldIndex = subfieldIndices[iSubfield];
@@ -364,7 +371,7 @@ pylith::faults::FaultCohesiveDyn::_setKernelsResidual(pylith::feassemble::Integr
         const PetscBdPointFunc f1u_neg = NULL;
 
         // Elasticity equation (displacement) for positive side of the fault.
-        const PetscBdPointFunc f0u_neg = _rheology->getF0uPosKernel();
+        const PetscBdPointFunc f0u_pos = _rheology->getF0uPosKernel();
         const PetscBdPointFunc f1u_pos = NULL;
 
         // Fault slip constraint equation.
@@ -383,11 +390,13 @@ pylith::faults::FaultCohesiveDyn::_setKernelsResidual(pylith::feassemble::Integr
     } // QUASISTATIC
     case pylith::problems::Physics::DYNAMIC_IMEX: {
         // Elasticity equation (displacement) for negative side of the fault.
-        const PetscBdPointFunc g0v_neg = pylith::fekernels::FaultCohesiveDyn::f0u_neg;
+        //const PetscBdPointFunc g0v_neg = pylith::fekernels::FaultCohesiveDyn::f0u_neg;
+        const PetscBdPointFunc g0v_neg = _rheology->getF0uNegKernel();
         const PetscBdPointFunc g1v_neg = NULL;
 
         // Elasticity equation (displacement) for positive side of the fault.
-        const PetscBdPointFunc g0v_pos = pylith::fekernels::FaultCohesiveDyn::f0u_pos;
+        //const PetscBdPointFunc g0v_pos = pylith::fekernels::FaultCohesiveDyn::f0u_pos;
+        const PetscBdPointFunc g0v_pos = _rheology->getF0uPosKernel();
         const PetscBdPointFunc g1v_pos = NULL;
 
         // Fault slip constraint equation.
@@ -481,6 +490,17 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
 
     PYLITH_METHOD_END;
 } // _setKernelsJacobian
+
+/** Set kernels for computing updated state variables in auxiliary field.
+ *
+ * @param[out] integrator Integrator for material.
+ * @param[in] solution Solution field.
+ */
+void
+pylith::faults::FaultCohesiveDyn::_setKernelsUpdateStateVars(pylith::feassemble::IntegratorInterface* integrator,
+                                const pylith::topology::Field& solution) const {
+    assert(0);
+}
 
 
 // End of file

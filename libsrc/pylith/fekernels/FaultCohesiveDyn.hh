@@ -69,6 +69,7 @@
 #include "pylith/fekernels/Tensor.hh" // USES Tensor
 #include "pylith/fekernels/BoundaryDirections.hh" // USES BoundaryDirections
 #include "pylith/fekernels/Elasticity.hh" // USES Elasticity
+#include "pylith/fekernels/FaultFriction.hh" // USES FaultFriction
 
 #include "pylith/utils/types.hh"
 
@@ -78,97 +79,6 @@ public:
 
     // PUBLIC METHODS /////////////////////////////////////////////////////////////////////////////
 public:
-
-    // --------------------------------------------------------------------------------------------
-    /** f0 function for elasticity equation: f0u = +\lambda (neg side).
-     *
-     * Solution fields: [disp(dim), ..., lagrange(dim)]
-     */
-    static inline
-    void f0u_neg(const PylithInt dim,
-                 const PylithInt numS,
-                 const PylithInt numA,
-                 const PylithInt sOff[],
-                 const PylithInt sOff_x[],
-                 const PylithScalar s[],
-                 const PylithScalar s_t[],
-                 const PylithScalar s_x[],
-                 const PylithInt aOff[],
-                 const PylithInt aOff_x[],
-                 const PylithScalar a[],
-                 const PylithScalar a_t[],
-                 const PylithScalar a_x[],
-                 const PylithReal t,
-                 const PylithScalar x[],
-                 const PylithReal n[],
-                 const PylithInt numConstants,
-                 const PylithScalar constants[],
-                 PylithScalar f0[]) {
-        assert(sOff);
-        assert(s);
-        assert(f0);
-
-        assert(numS >= 2);
-
-        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
-
-        const PylithInt fOffN = 0;
-        const PylithInt sOffLagrange = sOff[numS-1];
-        const PylithScalar* lagrange = &s[sOffLagrange];
-
-        pylith::fekernels::FaultFriction::SlipContext slipContext;
-        pylith::fekernels::FaultFriction::FrictionContext frictionContext;
-        pylith::fekernels::FaultFriction::setContext(&frictionContext);
-
-        PylithReal tractionFriction = 0.0;
-        friction(slipContext,frictionContext,rheologyContext,frictionCoefFn, frictionDirFn,&tractionFriction);
-
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            f0[fOffN+i] += tractionFriction[i] - lagrange[i];
-        } // for
-    }
-
-    // --------------------------------------------------------------------------------------------
-    /** f0 function for elasticity equation: f0u = -\lambda (pos side).
-     *
-     * Solution fields: [disp(dim), ..., lagrange(dim)]
-     */
-    static inline
-    void f0u_pos(const PylithInt dim,
-                 const PylithInt numS,
-                 const PylithInt numA,
-                 const PylithInt sOff[],
-                 const PylithInt sOff_x[],
-                 const PylithScalar s[],
-                 const PylithScalar s_t[],
-                 const PylithScalar s_x[],
-                 const PylithInt aOff[],
-                 const PylithInt aOff_x[],
-                 const PylithScalar a[],
-                 const PylithScalar a_t[],
-                 const PylithScalar a_x[],
-                 const PylithReal t,
-                 const PylithScalar x[],
-                 const PylithReal n[],
-                 const PylithInt numConstants,
-                 const PylithScalar constants[],
-                 PylithScalar f0[]) {
-        assert(sOff);
-        assert(s);
-        assert(f0);
-
-        assert(numS >= 2);
-
-        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
-
-        const PylithInt fOffP = 0;
-        const PylithInt sOffLagrange = sOff[numS-1];
-        const PylithScalar* lagrange = &s[sOffLagrange];
-
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            f0[fOffP+i] += -lagrange[i];
-        } // for
-    }
 
     // --------------------------------------------------------------------------------------------
     /** f0 function for slip constraint equation: f0\lambda = (u^+ - u^-) - d
@@ -205,10 +115,7 @@ public:
         assert(numA >= 1);
 
         const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
-        const PylithInt i_slip = 0;
         const PylithInt i_disp = 0;
-
-        const PylithScalar* slip = &a[aOff[i_slip]];
 
         const PylithInt sOffDispN = sOff[i_disp];
         const PylithInt sOffDispP = sOffDispN+spaceDim;
@@ -217,32 +124,12 @@ public:
         const PylithScalar* dispN = &s[sOffDispN];
         const PylithScalar* dispP = &s[sOffDispP];
 
-        switch (spaceDim) {
-        case 2: {
-            const PylithInt _spaceDim = 2;
-            const PylithScalar tanDir[2] = {-n[1], n[0] };
-            for (PylithInt i = 0; i < _spaceDim; ++i) {
-                const PylithScalar slipXY = n[i]*slip[0] + tanDir[i]*slip[1];
-                f0[fOffLagrange+i] += -dispP[i] + dispN[i] + slipXY;
-            } // for
-            break;
-        } // case 2
-        case 3: {
-            const PylithInt _spaceDim = 3;
-            const PylithScalar* refDir1 = &constants[0];
-            const PylithScalar* refDir2 = &constants[3];
-            PylithScalar tanDir1[3], tanDir2[3];
-            pylith::fekernels::BoundaryDirections::tangential_directions(tanDir1, tanDir2, refDir1, refDir2, n);
+        const PylithInt sOffLagrange = sOff[numS-1];
+        const PylithScalar* lagrange = &s[sOffLagrange];
 
-            for (PylithInt i = 0; i < _spaceDim; ++i) {
-                const PylithScalar slipXYZ = n[i]*slip[0] + tanDir1[i]*slip[1] + tanDir2[i]*slip[2];
-                f0[fOffLagrange+i] += -dispP[i] + dispN[i] + slipXYZ;
-            } // for
-            break;
-        } // case 3
-        default:
-            assert(0);
-        } // switch
+        for (PylithInt i = 0; i < spaceDim; ++i) {
+                f0[fOffLagrange+i] += lagrange[i] * (dispP[i] - dispN[i]);
+        } // for
     }
 
     // --------------------------------------------------------------------------------------------
@@ -275,6 +162,8 @@ public:
         assert(s);
         assert(a);
         assert(f0);
+
+        assert(0); // !!! this function is not implemented for FaultCohesiveDyn
 
         assert(numS >= 3);
         assert(numA >= 1);
@@ -347,7 +236,7 @@ public:
         const PylithInt ncols = spaceDim;
 
         for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[(gOffN+i)*ncols+i] += +1.0;
+            Jf0[(gOffN+i)*ncols+i] += -1.0;
         } // for
     }
 
@@ -385,7 +274,7 @@ public:
         const PylithInt ncols = spaceDim;
 
         for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*ncols+i] += -1.0;
+            Jf0[i*ncols+i] += 1.0;
         } // for
     }
 
@@ -422,13 +311,16 @@ public:
 
         const PylithInt spaceDim = dim+1; // :KLUDGE: dim passed in is spaceDim-1
 
+        const PylithInt sOffLagrange = sOff[numS-1];
+        const PylithScalar* lagrange = &s[sOffLagrange];
+
         const PylithInt gOffN = 0;
         const PylithInt gOffP = gOffN+spaceDim*spaceDim;
         const PylithInt ncols = spaceDim;
 
         for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[gOffN+i*ncols+i] += +1.0;
-            Jf0[gOffP+i*ncols+i] += -1.0;
+            Jf0[gOffN+i*ncols+i] += -lagrange[i]; // neg side
+            Jf0[gOffP+i*ncols+i] += +lagrange[i]; // pos side
         } // for
     }
 
@@ -547,7 +439,7 @@ public:
         const PylithInt spaceDim = dim+1; // :KLUDGE: dim passed in is spaceDim-1
 
         for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*spaceDim+i] += +1.0;
+            Jf0[i*spaceDim+i] += -1.0;
         } // for
     } // Jf0ll_neg
 
@@ -584,7 +476,7 @@ public:
         const PylithInt spaceDim = dim+1; // :KLUDGE: dim passed in is spaceDim-1
 
         for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*spaceDim+i] += +1.0;
+            Jf0[i*spaceDim+i] += -1.0;
         } // for
     } // Jf0ll_pos
 

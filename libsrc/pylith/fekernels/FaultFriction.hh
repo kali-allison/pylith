@@ -305,28 +305,28 @@ public:
         
         const PylithInt spaceDim = frictionContext.dim + 1; // :KLUDGE: dim passed in is spaceDim-1
 
-        frictiondirfn_type frictionDirFn;
-        if (spaceDim == 2) {
-            frictionDirFn = frictionDir2D;
+        switch (spaceDim) {
+        case 2: {
+            frictiondirfn_type frictionDirFn = frictionDir2D;
+            PylithReal tractionFriction[2];
+            friction(frictionContext,rheologyContext,frictionCoefficientFn,frictionDirFn, tractionFriction);
+            for (PylithInt i = 0; i < spaceDim; ++i) {
+                PylithReal val = tractionFriction[i] - frictionContext.tractionGlobal[i];
+                (faultSidePos) ? f0[i] += -val : f0[i] += val;
+            }
         }
-        else if (spaceDim == 3) {
-            frictionDirFn = frictionDir3D;
+        case 3: {
+            frictiondirfn_type frictionDirFn = frictionDir3D;
+            PylithReal tractionFriction[3];
+            friction(frictionContext,rheologyContext,frictionCoefficientFn,frictionDirFn, tractionFriction);
+            for (PylithInt i = 0; i < spaceDim; ++i) {
+                PylithReal val = tractionFriction[i] - frictionContext.tractionGlobal[i];
+                (faultSidePos) ? f0[i] += -val : f0[i] += val;
+            }
         }
-        else {
+        default:
             assert(0);
-        }
-
-        PylithReal* tractionFriction;
-        friction(frictionContext,rheologyContext,frictionCoefficientFn,frictionDirFn, tractionFriction);
-        
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            if (faultSidePos) {
-                f0[i] += - (tractionFriction[i] - frictionContext.tractionGlobal[i]);
-            }
-            else {
-                f0[i] += tractionFriction[i] - frictionContext.tractionGlobal[i];
-            }
-        }
+        } // switch
     } // f0u
 
 }; // FaultFriction

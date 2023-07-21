@@ -69,14 +69,20 @@ pylith::faults::FrictionStatic::addAuxiliarySubfields(void) {
 
 // ------------------------------------------------------------------------------------------------
 // return residual kernal f0u_neg
-PetscBdPointFunc getF0uNegKernel() {
-    return pylith::fekernels::FrictionStatic::fu0_neg;
+PetscBdPointFunc
+pylith::faults::FrictionStatic::getF0uNegKernel(void) const {
+    PYLITH_METHOD_BEGIN;
+    const PetscBdPointFunc f0u_neg = pylith::fekernels::FrictionStatic::fu0_neg;
+    return f0u_neg;
 }
 
 // ------------------------------------------------------------------------------------------------
-// return residual kernal f0u_neg
-PetscBdPointFunc getF0uPosKernel() {
-    return pylith::fekernels::FrictionStatic::fu0_pos;
+// return residual kernal f0u_pos
+PetscBdPointFunc 
+pylith::faults::FrictionStatic::getF0uPosKernel(void) const {
+    PYLITH_METHOD_BEGIN;
+    const PetscBdPointFunc fu0_pos = pylith::fekernels::FrictionStatic::fu0_pos;
+    return fu0_pos;
 }
 
 // End of file

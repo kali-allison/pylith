@@ -354,6 +354,8 @@ public:
             fault->setSurfaceLabelName("fault_xpos");
 
             // create static friction rheology and assign to fault
+            //pylith::faults::FrictionStatic testRheology;
+            //pylith::faults::FrictionStatic *testRheology = new pylith::faults::FrictionStatic();
             pylith::faults::FaultRheology *rheology = new pylith::faults::FrictionStatic();
             assert(rheology);
             fault->setFaultRheology(rheology);

@@ -53,8 +53,7 @@ public:
     } // toXY
 
     /** Transform values from (x, y, z) to (tangential 1, tangential 2, normal).
-     * valueXY Values in xyz coordinate system.
-     * valuesTN Values in tagential1-tangengt2-normal coordinate system.
+     * 
      * @param[out] valuesTN Values in tagential1-tangengt2-normal coordinate system.
      * @param[in] valueXY Values in xyz coordinate system.
      * @param[in] normalDir Normal direction unit vector.
@@ -65,7 +64,6 @@ public:
                const PylithReal refDir1[],
                const PylithReal refDir2[],
                const PylithReal normalDir[]) {
-        const PylithInt _dim = 3;
 
         PylithScalar tanDir1[3], tanDir2[3];
         BoundaryDirections::tangential_directions(tanDir1, tanDir2, refDir1, refDir2, normalDir);
@@ -85,7 +83,7 @@ public:
     void toTN(PylithReal valuesTN[],
               const PylithReal valuesXY[],
               const PylithReal normalDir[]) {
-        const PylithInt _dim = 2;
+
         const PylithReal tanDir[2] = {-normalDir[1], normalDir[0] };
 
         valuesTN[0] = valuesXY[0]*tanDir[0] + valuesXY[1]*tanDir[1];
