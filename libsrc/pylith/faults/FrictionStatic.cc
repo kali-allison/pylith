@@ -72,7 +72,7 @@ pylith::faults::FrictionStatic::addAuxiliarySubfields(void) {
 PetscBdPointFunc
 pylith::faults::FrictionStatic::getF0uNegKernel(void) const {
     PYLITH_METHOD_BEGIN;
-    const PetscBdPointFunc f0u_neg = pylith::fekernels::FrictionStatic::fu0_neg;
+    const PetscBdPointFunc f0u_neg = pylith::fekernels::FrictionStatic::f0u_neg;
     return f0u_neg;
 }
 
@@ -81,8 +81,26 @@ pylith::faults::FrictionStatic::getF0uNegKernel(void) const {
 PetscBdPointFunc 
 pylith::faults::FrictionStatic::getF0uPosKernel(void) const {
     PYLITH_METHOD_BEGIN;
-    const PetscBdPointFunc fu0_pos = pylith::fekernels::FrictionStatic::fu0_pos;
-    return fu0_pos;
+    const PetscBdPointFunc f0u_pos = pylith::fekernels::FrictionStatic::f0u_pos;
+    return f0u_pos;
+}
+
+// ------------------------------------------------------------------------------------------------
+// return Jacobian kernal Jf0uu_neg
+PetscBdPointJac
+pylith::faults::FrictionStatic::getJf0uuNegKernel(void) const {
+    PYLITH_METHOD_BEGIN;
+    const PetscBdPointJac Jf0uu_neg = pylith::fekernels::FrictionStatic::Jf0uu_neg;
+    return Jf0uu_neg;
+}
+
+// ------------------------------------------------------------------------------------------------
+// return residual kernal Jf0uu_pos
+PetscBdPointJac 
+pylith::faults::FrictionStatic::getJf0uuPosKernel(void) const {
+    PYLITH_METHOD_BEGIN;
+    const PetscBdPointJac Jf0uu_pos = pylith::fekernels::FrictionStatic::Jf0uu_pos;
+    return Jf0uu_pos;
 }
 
 // End of file

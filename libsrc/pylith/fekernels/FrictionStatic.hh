@@ -112,9 +112,6 @@ public:
      *
      */
     static inline
-    //void frictionCoefficient(const pylith::fekernels::FaultFriction::Context& frictionContext,
-    //                        void* rheologyContext,
-    //                         PylithReal* coefficient)
     void frictionCoefficient(PetscReal t,
                              PetscReal slip,
                              PetscReal slipVel,
@@ -130,7 +127,7 @@ public:
     // --------------------------------------------------------------------------------------------
     // residual fu0 on negative side of fault
     static inline
-    void fu0_neg(const PylithInt dim,
+    void f0u_neg(const PylithInt dim,
                 const PylithInt numS,
                 const PylithInt numA,
                 const PylithInt sOff[],
@@ -165,12 +162,12 @@ public:
         // instead of calling Elasticity::f1v we will call FaultFriction::f0u
         PylithInt faultSidePos = 0;
         pylith::fekernels::FaultFriction::f0u(frictionContext,&rheologyContext,frictionCoefficient,faultSidePos,f0);
-    } // fu0_neg
+    } // f0u_neg
 
 // --------------------------------------------------------------------------------------------
     // residual fu0 on positive side of fault
     static inline
-    void fu0_pos(const PylithInt dim,
+    void f0u_pos(const PylithInt dim,
                 const PylithInt numS,
                 const PylithInt numA,
                 const PylithInt sOff[],
@@ -202,7 +199,59 @@ public:
         
         bool faultSidePos = 1;
         pylith::fekernels::FaultFriction::f0u(frictionContext,&rheologyContext,frictionCoefficient,faultSidePos,f0);
-    } // fu0_pos
+    } // f0u_pos
+
+
+// --------------------------------------------------------------------------------------------
+    // Jacobian Jf0uu on negative side of fault: Jf0uu = 0
+    static inline
+    void Jf0uu_neg(const PylithInt dim,
+                   const PylithInt numS,
+                   const PylithInt numA,
+                   const PylithInt sOff[],
+                   const PylithInt sOff_x[],
+                   const PylithScalar s[],
+                   const PylithScalar s_t[],
+                   const PylithScalar s_x[],
+                   const PylithInt aOff[],
+                   const PylithInt aOff_x[],
+                   const PylithScalar a[],
+                   const PylithScalar a_t[],
+                   const PylithScalar a_x[],
+                   const PylithReal t,
+                   const PylithReal s_tshift,
+                   const PylithScalar x[],
+                   const PylithReal n[],
+                   const PylithInt numConstants,
+                   const PylithScalar constants[],
+                   PylithScalar Jf0[]) {
+
+    } // Jf0uu_neg
+
+// --------------------------------------------------------------------------------------------
+    // Jacobian Jf0uu on positive side of fault: Jf0uu = 0
+    static inline
+    void Jf0uu_pos(const PylithInt dim,
+                   const PylithInt numS,
+                   const PylithInt numA,
+                   const PylithInt sOff[],
+                   const PylithInt sOff_x[],
+                   const PylithScalar s[],
+                   const PylithScalar s_t[],
+                   const PylithScalar s_x[],
+                   const PylithInt aOff[],
+                   const PylithInt aOff_x[],
+                   const PylithScalar a[],
+                   const PylithScalar a_t[],
+                   const PylithScalar a_x[],
+                   const PylithReal t,
+                   const PylithReal s_tshift,
+                   const PylithScalar x[],
+                   const PylithReal n[],
+                   const PylithInt numConstants,
+                   const PylithScalar constants[],
+                   PylithScalar Jf0[]) {
+    } // Jf0uu_pos
 
 
 }; // FrictionStatic`

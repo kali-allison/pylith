@@ -390,12 +390,10 @@ pylith::faults::FaultCohesiveDyn::_setKernelsResidual(pylith::feassemble::Integr
     } // QUASISTATIC
     case pylith::problems::Physics::DYNAMIC_IMEX: {
         // Elasticity equation (displacement) for negative side of the fault.
-        //const PetscBdPointFunc g0v_neg = pylith::fekernels::FaultCohesiveDyn::f0u_neg;
         const PetscBdPointFunc g0v_neg = _rheology->getF0uNegKernel();
         const PetscBdPointFunc g1v_neg = NULL;
 
         // Elasticity equation (displacement) for positive side of the fault.
-        //const PetscBdPointFunc g0v_pos = pylith::fekernels::FaultCohesiveDyn::f0u_pos;
         const PetscBdPointFunc g0v_pos = _rheology->getF0uPosKernel();
         const PetscBdPointFunc g1v_pos = NULL;
 
@@ -440,11 +438,13 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
     std::vector<JacobianKernels> kernels;
     switch (_formulation) {
     case QUASISTATIC: {
+        const PetscBdPointJac Jf0uu_neg = _rheology->getJf0uuNegKernel();
         const PetscBdPointJac Jf0ul_neg = pylith::fekernels::FaultCohesiveDyn::Jf0ul_neg;
         const PetscBdPointJac Jf1ul_neg = NULL;
         const PetscBdPointJac Jf2ul_neg = NULL;
         const PetscBdPointJac Jf3ul_neg = NULL;
 
+        const PetscBdPointJac Jf0uu_pos = _rheology->getJf0uuPosKernel();
         const PetscBdPointJac Jf0ul_pos = pylith::fekernels::FaultCohesiveDyn::Jf0ul_pos;
         const PetscBdPointJac Jf1ul_pos = NULL;
         const PetscBdPointJac Jf2ul_pos = NULL;

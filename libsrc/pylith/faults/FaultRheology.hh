@@ -93,6 +93,14 @@ public:
     virtual
     PetscBdPointFunc getF0uPosKernel(void) const = 0;
 
+    /// Get Jf0uu for negative side of fault.
+    virtual
+    PetscBdPointJac getJf0uuNegKernel(void) const = 0;
+
+    /// Get Jf0uu for positive side of fault.
+    virtual
+    PetscBdPointJac getJf0uuPosKernel(void) const = 0;
+
     // PROTECTED MEMBERS //////////////////////////////////////////////////////////////////////////
 
     int _lhsJacobianTriggers; ///< Triggers for needing to recompute the RHS Jacobian.
