@@ -82,8 +82,8 @@ public:
         const PylithScalar* dispP; // (spaceDim) displacement positive side of fault
         const PylithScalar* velN; // (spaceDim) velocity negative side of fault
         const PylithScalar* velP; // (spaceDim) velocity positive side of fault
-        PylithScalar* slip; // (spaceDim) fault coordinates
-        PylithScalar* slipVel; // (spaceDim) fault coordinates
+        PylithScalar slip[3]; // (spaceDim) fault coordinates
+        PylithScalar slipVel[3]; // (spaceDim) fault coordinates
         PylithScalar slipMagTangent; // scalar magnitude of slipRate in fault plane
         PylithScalar slipMagNormal; // scalar magnitude of slipRate in fault plane
         PylithScalar slipVelMagTangent; // scalar magnitude of slipRate in fault plane
@@ -92,6 +92,18 @@ public:
         PylithReal cohesion;
         PylithReal opening;
         bool openFreeSurface;
+
+        Context(void) :
+        dim(0),
+        t(0.0),
+        dt(0.0),
+        n(NULL),
+        refDir(NULL),
+        tractionGlobal(NULL),
+        dispN(NULL),
+        dispP(NULL),
+        velN(NULL),
+        velP(NULL) {}
     };
 
     //typedef void (*frictioncoeffn_type)(const Context&,
@@ -188,6 +200,7 @@ public:
             context->tractionShearFault = &lagrangeFault[0];
             context->tractionNormalFault = lagrangeFault[1];
             context->tractionShearMagFault = sqrt(lagrangeFault[0]*lagrangeFault[0]);
+            break;
         } // case 2
         case 3: {
             // get information for rotating vectors from global to fault coordinates
@@ -212,6 +225,7 @@ public:
             context->tractionShearFault = &lagrangeFault[0];
             context->tractionNormalFault = lagrangeFault[2];
             context->tractionShearMagFault = fabs(lagrangeFault[0]);
+            break;
         } // case 3
         default:
             assert(0);
@@ -314,6 +328,7 @@ public:
                 PylithReal val = tractionFriction[i] - frictionContext.tractionGlobal[i];
                 (faultSidePos) ? f0[i] += -val : f0[i] += val;
             }
+            break;
         }
         case 3: {
             frictiondirfn_type frictionDirFn = frictionDir3D;
@@ -323,6 +338,7 @@ public:
                 PylithReal val = tractionFriction[i] - frictionContext.tractionGlobal[i];
                 (faultSidePos) ? f0[i] += -val : f0[i] += val;
             }
+            break;
         }
         default:
             assert(0);

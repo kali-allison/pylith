@@ -379,11 +379,11 @@ pylith::faults::FaultCohesiveDyn::_setKernelsResidual(pylith::feassemble::Integr
         const PetscBdPointFunc f1l = NULL;
 
         kernels.resize(3);
-        kernels[0] = ResidualKernels("displacement ", integrator_t::LHS, integrator_t::NEGATIVE_FACE,
+        kernels[0] = ResidualKernels("displacement", integrator_t::LHS, integrator_t::NEGATIVE_FACE,
                                      f0u_neg, f1u_neg);
-        kernels[1] = ResidualKernels("displacement ", integrator_t::LHS, integrator_t::POSITIVE_FACE,
+        kernels[1] = ResidualKernels("displacement", integrator_t::LHS, integrator_t::POSITIVE_FACE,
                                      f0u_pos, f1u_pos);
-        kernels[2] = ResidualKernels("lagrange_multiplier_fault ", integrator_t::LHS, integrator_t::FAULT_FACE,
+        kernels[2] = ResidualKernels("lagrange_multiplier_fault", integrator_t::LHS, integrator_t::FAULT_FACE,
                                      f0l, f1l);
 
         break;
@@ -456,8 +456,8 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
         const PetscBdPointJac Jf3lu = NULL;
 
         kernels.resize(3);
-        const char* nameDisplacement = "displacement ";
-        const char* nameLagrangeMultiplier = "lagrange_multiplier_fault ";
+        const char* nameDisplacement = "displacement";
+        const char* nameLagrangeMultiplier = "lagrange_multiplier_fault";
         kernels[0] = JacobianKernels(nameDisplacement, nameLagrangeMultiplier, integrator_t::LHS,
                                      integrator_t::NEGATIVE_FACE, Jf0ul_neg, Jf1ul_neg, Jf2ul_neg, Jf3ul_neg);
         kernels[1] = JacobianKernels(nameDisplacement, nameLagrangeMultiplier, integrator_t::LHS,
@@ -473,8 +473,8 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
         const PetscBdPointJac Jf3lu = NULL;
 
         kernels.resize(1);
-        const char* nameDisplacement = "displacement ";
-        const char* nameLagrangeMultiplier = "lagrange_multiplier_fault ";
+        const char* nameDisplacement = "displacement";
+        const char* nameLagrangeMultiplier = "lagrange_multiplier_fault";
         kernels[0] = JacobianKernels(nameLagrangeMultiplier, nameDisplacement, integrator_t::LHS,
                                      integrator_t::FAULT_FACE, Jf0lu, Jf1lu, Jf2lu, Jf3lu);
         break;
@@ -499,7 +499,7 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
 void
 pylith::faults::FaultCohesiveDyn::_setKernelsUpdateStateVars(pylith::feassemble::IntegratorInterface* integrator,
                                 const pylith::topology::Field& solution) const {
-    assert(0);
+    //assert(0);
 }
 
 
