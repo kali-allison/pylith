@@ -153,7 +153,7 @@ class pylith::_OneFaultShearNoSlipDyn {
     static double faulttraction_x(const double x,
                                   const double y) {
         return 0.0;
-    } // faulttraction_x  //should change this part of code to the faulttraction_y
+    } // faulttraction_x
 
     static double faulttraction_y(const double x, //faulttraction xy
                                   const double y) {
@@ -187,7 +187,7 @@ class pylith::_OneFaultShearNoSlipDyn {
 
         const PylithScalar tanDir[2] = {-n[1], n[0] }; //tanDir[0]: The x-component of the tangent direction vector. tanDir[1]: The y-component of the tangent direction vector.
         const PylithScalar tractionShear = -strain_xy() * 2.0 * mu / 2.25e+10;
-        const PylithScalar tractionNormal = 0.0;
+        const PylithScalar tractionNormal = 10.0;
         r0[0] += tractionShear*tanDir[0] + tractionNormal*n[0];
         r0[1] += tractionShear*tanDir[1] + tractionNormal*n[1];
     } // boundary_tractions

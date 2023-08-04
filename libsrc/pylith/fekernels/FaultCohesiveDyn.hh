@@ -129,6 +129,7 @@ public:
 
         for (PylithInt i = 0; i < spaceDim; ++i) {
                 f0[fOffLagrange+i] += lagrange[i] * (dispP[i] - dispN[i]);
+                assert(!isnan(lagrange[i] * (dispP[i] - dispN[i])));
         } // for
     }
 

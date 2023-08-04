@@ -13,7 +13,9 @@
         "iosfwd": "cpp",
         "*.tcc": "cpp",
         "memory_resource": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "cmath": "cpp",
+        "complex": "cpp"
     },
     "python.formatting.autopep8Args": [
         "-max-line-length",
