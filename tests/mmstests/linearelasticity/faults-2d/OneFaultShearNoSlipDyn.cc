@@ -187,7 +187,7 @@ class pylith::_OneFaultShearNoSlipDyn {
 
         const PylithScalar tanDir[2] = {-n[1], n[0] }; //tanDir[0]: The x-component of the tangent direction vector. tanDir[1]: The y-component of the tangent direction vector.
         const PylithScalar tractionShear = -strain_xy() * 2.0 * mu / 2.25e+10;
-        const PylithScalar tractionNormal = 10.0;
+        const PylithScalar tractionNormal = 0.0;
         r0[0] += tractionShear*tanDir[0] + tractionNormal*n[0];
         r0[1] += tractionShear*tanDir[1] + tractionNormal*n[1];
     } // boundary_tractions
@@ -232,7 +232,7 @@ public:
     TestFaultKin_Data* createData(void) {
         TestFaultKin_Data* data = new TestFaultKin_Data();assert(data);
 
-        data->journalName = "OneFaultShearNoSLip";
+        data->journalName = "OneFaultShearNoSLipDyn";
 
         data->isJacobianLinear = true;
 
