@@ -16,7 +16,7 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file tests/mmstests/faults/TestFaultKin2D_OneFaultShearNoSlip.cc
+/** @file tests/mmstests/faults/TestFault2D_OneFaultShearNoSlip.cc
  *
  * Square domain of sides 12.0 km with a single through-going fault at y=+2 km.
  * Simple shear with no slip.
@@ -212,8 +212,8 @@ class pylith::_OneFaultShearNoSlip {
 public:
 
     static
-    TestFaultKin_Data* createData(void) {
-        TestFaultKin_Data* data = new TestFaultKin_Data();assert(data);
+    TestFault_Data* createData(void) {
+        TestFault_Data* data = new TestFault_Data();assert(data);
 
         data->journalName = "OneFaultShearNoSLip";
 
@@ -358,12 +358,12 @@ public:
         return data;
     } // createData
 
-}; // TestFaultKin2D_OneFaultShearNoSlip
+}; // TestFault2D_OneFaultShearNoSlip
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::OneFaultShearNoSlip::TriP1(void) {
-    TestFaultKin_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
+    TestFault_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -380,9 +380,9 @@ pylith::OneFaultShearNoSlip::TriP1(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::OneFaultShearNoSlip::TriP2(void) {
-    TestFaultKin_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
+    TestFault_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -411,9 +411,9 @@ pylith::OneFaultShearNoSlip::TriP2(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::OneFaultShearNoSlip::TriP3(void) {
-    TestFaultKin_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
+    TestFault_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -442,9 +442,9 @@ pylith::OneFaultShearNoSlip::TriP3(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::OneFaultShearNoSlip::TriP4(void) {
-    TestFaultKin_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
+    TestFault_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -473,9 +473,9 @@ pylith::OneFaultShearNoSlip::TriP4(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::OneFaultShearNoSlip::QuadQ1(void) {
-    TestFaultKin_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
+    TestFault_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
@@ -492,9 +492,9 @@ pylith::OneFaultShearNoSlip::QuadQ1(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::OneFaultShearNoSlip::QuadQ2(void) {
-    TestFaultKin_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
+    TestFault_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
@@ -523,9 +523,9 @@ pylith::OneFaultShearNoSlip::QuadQ2(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::OneFaultShearNoSlip::QuadQ3(void) {
-    TestFaultKin_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
+    TestFault_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
@@ -554,9 +554,9 @@ pylith::OneFaultShearNoSlip::QuadQ3(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::OneFaultShearNoSlip::QuadQ4(void) {
-    TestFaultKin_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
+    TestFault_Data* data = pylith::_OneFaultShearNoSlip::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 

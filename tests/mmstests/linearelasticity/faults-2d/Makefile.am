@@ -35,7 +35,7 @@ check_PROGRAMS =  $(MMS_DRIVER)
 mmstest_linearelasticity_faults2d_SOURCES = \
 	$(top_srcdir)/tests/src/MMSTest.cc \
 	$(top_srcdir)/tests/src/driver_catch2.cc \
-	TestFaultKin.cc \
+	TestFault.cc \
 	TestCases.cc \
 	TwoBlocksStatic.cc \
 	ThreeBlocksStatic.cc \
@@ -49,7 +49,7 @@ run_%.sh:
 	chmod +x $@
 
 dist_noinst_HEADERS = \
-	TestFaultKin.hh \
+	TestFault.hh \
 	TwoBlocksStatic.hh \
 	ThreeBlocksStatic.hh \
 	OneFaultShearNoSlip.hh \

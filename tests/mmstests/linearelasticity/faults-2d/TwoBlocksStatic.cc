@@ -192,8 +192,8 @@ private:
 public:
 
     static
-    TestFaultKin_Data* createData(void) {
-        TestFaultKin_Data* data = new TestFaultKin_Data();assert(data);
+    TestFault_Data* createData(void) {
+        TestFault_Data* data = new TestFault_Data();assert(data);
 
         data->journalName = "TwoBlocksStatic";
 
@@ -324,9 +324,9 @@ public:
 }; // _TwoBlocksStatic
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::TwoBlocksStatic::TriP1(void) {
-    TestFaultKin_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
     data->allowZeroResidual = true;
@@ -344,9 +344,9 @@ pylith::TwoBlocksStatic::TriP1(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::TwoBlocksStatic::TriP2(void) {
-    TestFaultKin_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -375,9 +375,9 @@ pylith::TwoBlocksStatic::TriP2(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::TwoBlocksStatic::TriP3(void) {
-    TestFaultKin_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -406,9 +406,9 @@ pylith::TwoBlocksStatic::TriP3(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::TwoBlocksStatic::TriP4(void) {
-    TestFaultKin_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -437,9 +437,9 @@ pylith::TwoBlocksStatic::TriP4(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::TwoBlocksStatic::QuadQ1(void) {
-    TestFaultKin_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
@@ -456,9 +456,9 @@ pylith::TwoBlocksStatic::QuadQ1(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::TwoBlocksStatic::QuadQ2(void) {
-    TestFaultKin_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
@@ -487,9 +487,9 @@ pylith::TwoBlocksStatic::QuadQ2(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::TwoBlocksStatic::QuadQ3(void) {
-    TestFaultKin_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
@@ -518,9 +518,9 @@ pylith::TwoBlocksStatic::QuadQ3(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::TwoBlocksStatic::QuadQ4(void) {
-    TestFaultKin_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_TwoBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 

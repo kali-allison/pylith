@@ -18,7 +18,7 @@
 
 #include <portinfo>
 
-#include "TestFaultKin.hh" // USES TestFaultKin_Data
+#include "TestFault.hh" // USES TestFault_Data
 
 namespace pylith {
     class TwoFaultsShearNoSlip;
@@ -28,21 +28,21 @@ class pylith::TwoFaultsShearNoSlip {
 public:
 
     // Data factory methods
-    static TestFaultKin_Data* TriP1(void);
+    static TestFault_Data* TriP1(void);
 
-    static TestFaultKin_Data* TriP2(void);
+    static TestFault_Data* TriP2(void);
 
-    static TestFaultKin_Data* TriP3(void);
+    static TestFault_Data* TriP3(void);
 
-    static TestFaultKin_Data* TriP4(void);
+    static TestFault_Data* TriP4(void);
 
-    static TestFaultKin_Data* QuadQ1(void);
+    static TestFault_Data* QuadQ1(void);
 
-    static TestFaultKin_Data* QuadQ2(void);
+    static TestFault_Data* QuadQ2(void);
 
-    static TestFaultKin_Data* QuadQ3(void);
+    static TestFault_Data* QuadQ3(void);
 
-    static TestFaultKin_Data* QuadQ4(void);
+    static TestFault_Data* QuadQ4(void);
 
 private:
 

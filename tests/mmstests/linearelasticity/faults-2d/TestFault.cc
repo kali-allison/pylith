@@ -18,7 +18,7 @@
 
 #include <portinfo>
 
-#include "TestFaultKin.hh" // Implementation of class methods
+#include "TestFault.hh" // Implementation of class methods
 
 #include "pylith/bc/BoundaryCondition.cc" // HASA BoundaryCondition
 #include "pylith/problems/TimeDependent.hh" // USES TimeDependent
@@ -46,7 +46,7 @@
 
 // ------------------------------------------------------------------------------------------------
 // Constuctor.
-pylith::TestFaultKin::TestFaultKin(TestFaultKin_Data* data) :
+pylith::TestFault::TestFault(TestFault_Data* data) :
     _data(data) {
     assert(_data);
 
@@ -60,7 +60,7 @@ pylith::TestFaultKin::TestFaultKin(TestFaultKin_Data* data) :
 
 // ------------------------------------------------------------------------------------------------
 // Destructor.
-pylith::TestFaultKin::~TestFaultKin(void) {
+pylith::TestFault::~TestFault(void) {
     delete _data;_data = nullptr;
 } // destructor
 
@@ -68,7 +68,7 @@ pylith::TestFaultKin::~TestFaultKin(void) {
 // ------------------------------------------------------------------------------------------------
 // Initialize objects for test.
 void
-pylith::TestFaultKin::_initialize(void) {
+pylith::TestFault::_initialize(void) {
     PYLITH_METHOD_BEGIN;
     assert(_mesh);
     assert(_data);
@@ -112,13 +112,14 @@ pylith::TestFaultKin::_initialize(void) {
         assert(_data->faults[iFault]);
         _data->faults[iFault]->adjustTopology(_mesh);
 
-        assert(_data->kinSrc);
-        _data->kinSrc->auxFieldDB(&_data->faultAuxDB);
-        for (size_t i = 0; i < _data->faultNumAuxSubfields; ++i) {
-            const pylith::topology::FieldBase::Discretization& info = _data->faultAuxDiscretizations[i];
-            _data->faults[iFault]->setAuxiliarySubfieldDiscretization(_data->faultAuxSubfields[i], info.basisOrder, info.quadOrder,
-                                                                      _data->spaceDim-1, info.cellBasis, info.feSpace, info.isBasisContinuous);
-        } // for
+        if (_data->kinSrc) {
+            _data->kinSrc->auxFieldDB(&_data->faultAuxDB);
+            for (size_t i = 0; i < _data->faultNumAuxSubfields; ++i) {
+                const pylith::topology::FieldBase::Discretization& info = _data->faultAuxDiscretizations[i];
+                _data->faults[iFault]->setAuxiliarySubfieldDiscretization(_data->faultAuxSubfields[i], info.basisOrder, info.quadOrder,
+                                                                          _data->spaceDim-1, info.cellBasis, info.feSpace, info.isBasisContinuous);
+            } // for
+        } // if
     } // for
 
     // Set up problem.
@@ -159,7 +160,7 @@ pylith::TestFaultKin::_initialize(void) {
 // ------------------------------------------------------------------------------------------------
 // Set functions for computing the exact solution and its time derivative.
 void
-pylith::TestFaultKin::_setExactSolution(void) {
+pylith::TestFault::_setExactSolution(void) {
     assert(_data->exactSolnFns);
 
     const pylith::topology::Field* solution = _problem->getSolution();assert(solution);
@@ -198,7 +199,7 @@ pylith::TestFaultKin::_setExactSolution(void) {
 
 // ------------------------------------------------------------------------------------------------
 // Constructor
-pylith::TestFaultKin_Data::TestFaultKin_Data(void) :
+pylith::TestFault_Data::TestFault_Data(void) :
     spaceDim(2),
     meshFilename(nullptr),
     meshOptions(nullptr),
@@ -237,7 +238,7 @@ pylith::TestFaultKin_Data::TestFaultKin_Data(void) :
 
 // ------------------------------------------------------------------------------------------------
 // Destructor
-pylith::TestFaultKin_Data::~TestFaultKin_Data(void) {
+pylith::TestFault_Data::~TestFault_Data(void) {
     for (size_t i = 0; i < materials.size(); ++i) {
         delete materials[i];materials[i] = nullptr;
     } // for

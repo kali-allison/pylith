@@ -17,13 +17,13 @@
 //
 
 /**
- * @file mmstets/linearelasticity/faults-2d/TestFaultKin.hh
+ * @file mmstets/linearelasticity/faults-2d/TestFault.hh
  *
  * @brief C++ class for testing faults with prescribed slip.
  */
 
-#if !defined(pylith_mmstests_testfaultkin_hh)
-#define pylith_mmstests_testfaultkin_hh
+#if !defined(pylith_mmstests_testfault_hh)
+#define pylith_mmstests_testfault_hh
 
 #include "tests/src/MMSTest.hh" // ISA MMSTEST
 
@@ -40,11 +40,11 @@
 #include "pylith/topology/Field.hh" // HASA FieldBase::Discretization
 
 namespace pylith {
-    class TestFaultKin;
-    class TestFaultKin_Data;
+    class TestFault;
+    class TestFault_Data;
 } // pylith
 
-class pylith::TestFaultKin : public pylith::testing::MMSTest {
+class pylith::TestFault : public pylith::testing::MMSTest {
     // PUBLIC METHODS /////////////////////////////////////////////////////////////////////////////
 public:
 
@@ -52,10 +52,10 @@ public:
      *
      * @param[in] data Data for MMS test.
      */
-    TestFaultKin(TestFaultKin_Data* data);
+    TestFault(TestFault_Data* data);
 
     /// Destructor.
-    ~TestFaultKin(void);
+    ~TestFault(void);
 
     // PROTECTED METHODS //////////////////////////////////////////////////////////////////////////
 protected:
@@ -69,20 +69,20 @@ protected:
     // PROTECTED MEMBERS //////////////////////////////////////////////////////////////////////////
 protected:
 
-    TestFaultKin_Data* _data; ///< Test parameters.
+    TestFault_Data* _data; ///< Test parameters.
 
-}; // class TestFaultKin
+}; // class TestFault
 
 // ================================================================================================
-class pylith::TestFaultKin_Data {
+class pylith::TestFault_Data {
     // PUBLIC METHODS /////////////////////////////////////////////////////////////////////////////
 public:
 
     /// Constructor
-    TestFaultKin_Data(void);
+    TestFault_Data(void);
 
     /// Destructor
-    ~TestFaultKin_Data(void);
+    ~TestFault_Data(void);
 
     // PUBLIC MEMBERS /////////////////////////////////////////////////////////////////////////////
 public:
@@ -136,8 +136,8 @@ public:
 
     pylith::faults::KinSrc* kinSrc;
 
-}; // TestFaultKin_Data
+}; // TestFault_Data
 
-#endif // pylith_mmstests_testfaultkin_hh
+#endif // pylith_mmstests_testfault_hh
 
 // End of file

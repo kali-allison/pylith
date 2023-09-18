@@ -207,8 +207,8 @@ class pylith::_ThreeBlocksStatic {
 public:
 
     static
-    TestFaultKin_Data* createData(void) {
-        TestFaultKin_Data* data = new TestFaultKin_Data();assert(data);
+    TestFault_Data* createData(void) {
+        TestFault_Data* data = new TestFault_Data();assert(data);
 
         data->journalName = "ThreeBlocksStatic";
 
@@ -350,9 +350,9 @@ public:
 }; // TestFaultKin2D_ThreeBlocksStatic
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::ThreeBlocksStatic::TriP1(void) {
-    TestFaultKin_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -369,9 +369,9 @@ pylith::ThreeBlocksStatic::TriP1(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::ThreeBlocksStatic::TriP2(void) {
-    TestFaultKin_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -400,9 +400,9 @@ pylith::ThreeBlocksStatic::TriP2(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::ThreeBlocksStatic::TriP3(void) {
-    TestFaultKin_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -431,9 +431,9 @@ pylith::ThreeBlocksStatic::TriP3(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::ThreeBlocksStatic::TriP4(void) {
-    TestFaultKin_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/tri.mesh";
 
@@ -462,9 +462,9 @@ pylith::ThreeBlocksStatic::TriP4(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::ThreeBlocksStatic::QuadQ1(void) {
-    TestFaultKin_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
@@ -481,9 +481,9 @@ pylith::ThreeBlocksStatic::QuadQ1(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::ThreeBlocksStatic::QuadQ2(void) {
-    TestFaultKin_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
@@ -512,9 +512,9 @@ pylith::ThreeBlocksStatic::QuadQ2(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::ThreeBlocksStatic::QuadQ3(void) {
-    TestFaultKin_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
@@ -543,9 +543,9 @@ pylith::ThreeBlocksStatic::QuadQ3(void) {
 
 
 // ------------------------------------------------------------------------------------------------
-pylith::TestFaultKin_Data*
+pylith::TestFault_Data*
 pylith::ThreeBlocksStatic::QuadQ4(void) {
-    TestFaultKin_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
+    TestFault_Data* data = pylith::_ThreeBlocksStatic::createData();assert(data);
 
     data->meshFilename = "data/quad.mesh";
 
