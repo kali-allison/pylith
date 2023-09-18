@@ -232,7 +232,7 @@ public:
     TestFault_Data* createData(void) {
         TestFault_Data* data = new TestFault_Data();assert(data);
 
-        data->journalName = "OneFaultShearNoSLipDyn";
+        data->journalName = "OneFaultShearNoSlipDyn";
 
         data->isJacobianLinear = true;
 
