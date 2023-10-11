@@ -13,15 +13,15 @@
 #
 # ----------------------------------------------------------------------
 
-from .FaultRheology import FaultRheology
+from .FaultFriction import FaultFriction
 from .faults import FrictionStatic as ModuleFrictionStatic
 
 
-class FrictionStatic(FaultRheology, ModuleFrictionStatic):
+class FrictionStatic(FaultFriction, ModuleFrictionStatic):
     """
     Static friction fault constitutive model.
 
-    Implements `FaultRheology`.
+    Implements `FrictionStatic`.
     """
     DOC_CONFIG = {
         "cfg": """
@@ -37,14 +37,14 @@ class FrictionStatic(FaultRheology, ModuleFrictionStatic):
     def __init__(self, name="frictionstatic"):
         """Constructor.
         """
-        FaultRheology.__init__(self, name)
+        FaultFriction.__init__(self, name)
 
     def _defaults(self):
         from .AuxSubfieldsFrictionStatic import AuxSubfieldsFrictionStatic
         self.auxiliarySubfields = AuxSubfieldsFrictionStatic("auxiliary_subfields")
 
     def preinitialize(self, problem):
-        FaultRheology.preinitialize(self, problem)
+        FaultFriction.preinitialize(self, problem)
         ModuleFrictionStatic.useReferenceState(self, self.useReferenceState)
 
     def _createModuleObj(self):

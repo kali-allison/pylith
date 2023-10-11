@@ -29,9 +29,12 @@ swig_sources = \
 	../utils/PyreComponent.i \
 	../problems/Physics.i \
 	FaultCohesive.i \
-	FaultCohesiveDyn.i \
 	FaultCohesiveKin.i \
 	FaultCohesiveImpulses.i \
+	FaultCohesiveDyn.i \
+	FaultRheology.i \
+	FaultFriction.i \
+	FrictionStatic.i \
 	KinSrc.i \
 	KinSrcStep.i \
 	KinSrcRamp.i \

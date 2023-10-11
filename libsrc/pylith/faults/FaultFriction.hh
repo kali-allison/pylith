@@ -49,7 +49,7 @@ public:
     virtual pylith::faults::AuxiliaryFactoryRheology *getAuxiliaryFactory(void) = 0;
 
     /// Add rheology subfields to auxiliary field.
-    virtual void addAuxiliarySubfields(pylith::faults::AuxiliaryFactoryRheology*);
+    virtual void addAuxiliarySubfields(void);
 
     /// Get f0u for negative side of fault.
     virtual

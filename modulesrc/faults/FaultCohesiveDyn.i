@@ -16,9 +16,9 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file modulesrc/faults/FaultCohesiveKin.i
+/** @file modulesrc/faults/FaultCohesiveDyn.i
  *
- * @brief Python interface to C++ FaultCohesiveKin object.
+ * @brief Python interface to C++ FaultCohesiveDyn object.
  */
 
 namespace pylith {
@@ -138,7 +138,7 @@ protected:
             void _setKernelsUpdateStateVars(pylith::feassemble::IntegratorInterface* integrator,
                                             const pylith::topology::Field& solution) const;
 
-        }; // class FaultCohesiveKin
+        }; // class FaultCohesiveDyn
 
     } // faults
 } // pylith

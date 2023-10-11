@@ -15,7 +15,9 @@
         "memory_resource": "cpp",
         "sstream": "cpp",
         "cmath": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "faultcohesiveimpulses.hh": "c",
+        "faultfriction.hh": "c"
     },
     "python.formatting.autopep8Args": [
         "-max-line-length",
