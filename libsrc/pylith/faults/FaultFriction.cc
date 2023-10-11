@@ -47,13 +47,14 @@ pylith::faults::FaultFriction::deallocate(void) {}
 // ------------------------------------------------------------------------------------------------
 // Add rheology subfields to auxiliary field.
 void
-pylith::faults::FaultFriction::addAuxiliarySubfields(void) {
+pylith::faults::FaultFriction::addAuxiliarySubfields(pylith::faults::AuxiliaryFactoryRheology* auxiliaryFactory) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("addAuxiliarySubfields(void)");
 
     // :ATTENTION: The order for adding subfields must match the order of the auxiliary fields in the point-wise
     // functions (kernels).
-    _auxiliaryFactory->addCohesion();
+    assert(auxiliaryFactory);
+    auxiliaryFactory->addCohesion();
 
     PYLITH_METHOD_END;
 } // addAuxiliarySubfields

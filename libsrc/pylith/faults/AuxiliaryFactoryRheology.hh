@@ -21,8 +21,8 @@
  * @brief C++ helper class for setting up auxiliary subfields for the fault constitutive models.
  */
 
-#if !defined(pylith_faults_auxiliaryfactoryelasticity_hh)
-#define pylith_faults_auxiliaryfactoryelasticity_hh
+#if !defined(pylith_faults_auxiliaryfactoryrheology_hh)
+#define pylith_faults_auxiliaryfactoryrheology_hh
 
 #include "faultsfwd.hh" // forward declarations
 #include "pylith/feassemble/AuxiliaryFactory.hh" // ISA AuxiliaryFactory

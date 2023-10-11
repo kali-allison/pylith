@@ -25,6 +25,7 @@
 #include "pylith/faults/FrictionStatic.hh" // TRIAL
 #include "pylith/faults/TractionPerturbation.hh" // USES TractionPerturbation
 #include "pylith/faults/AuxiliaryFactoryDynamic.hh" // USES AuxiliaryFactoryDynamic
+#include "pylith/faults/AuxiliaryFactoryRheology.hh" // USES AuxiliaryFactoryDynamic
 #include "pylith/feassemble/IntegratorInterface.hh" // USES IntegratorInterface
 #include "pylith/feassemble/InterfacePatches.hh" // USES InterfacePatches
 #include "pylith/feassemble/ConstraintSimple.hh" // USES ConstraintSimple
@@ -242,14 +243,26 @@ pylith::faults::FaultCohesiveDyn::createAuxiliaryField(const pylith::topology::F
     _auxiliaryFactory->addTractionRheology(); // 0
     _auxiliaryFactory->addTractionPerturbation(); // 1
 
+    // We don't populate the auxiliary field via a spatial database, because they will be set from
+    // the traction perturbations.
+    // Comment: will need to change in future to avoid setting traction and traction perturbation
+    assert(_rheology);
+    pylith::faults::AuxiliaryFactoryRheology* auxiliaryFactoryRheology = _rheology->getAuxiliaryFactory();assert(auxiliaryFactoryRheology);
+    auxiliaryFactoryRheology->setSubfieldDiscretization("default", discretization.basisOrder, discretization.quadOrder, dimension,
+                                                 isFaultOnly, discretization.cellBasis, discretization.feSpace,
+                                                 discretization.isBasisContinuous);
+    assert(_normalizer);
+    auxiliaryFactoryRheology->initialize(auxiliaryField, *_normalizer, solution.getSpaceDim());
+
+    _rheology->addAuxiliarySubfields();
+
     auxiliaryField->subfieldsSetup();
     auxiliaryField->createDiscretization();
     pylith::topology::FieldOps::checkDiscretization(solution, *auxiliaryField);
     auxiliaryField->allocate();
     auxiliaryField->createOutputVector();
 
-    // We don't populate the auxiliary field via a spatial database, because they will be set from
-    // the traction perturbations.
+    auxiliaryFactoryRheology->setValuesFromDB();
 
     // Initialize auxiliary fields for dynamic (spontaneous) ruptures.
     assert(auxiliaryField);

@@ -122,6 +122,18 @@ class pylith::_OneFaultShearNoSlipDyn {
         return "none";
     } // friction_units
 
+    // cohesion
+    static double cohesion(const double x,
+                          const double y)
+    {
+        return 1e7;
+    } // cohesion
+
+    static const char *cohesion_units(void)
+    {
+        return "Pa";
+    } // friction_units
+
     // Solution subfields.
     static double strain_xx(void) {
         return 0.0;
@@ -260,12 +272,7 @@ public:
         data->matAuxDB.addValue("vs", vs, vs_units());
         data->matAuxDB.setCoordSys(data->cs);
 
-        assert(!data->kinSrc);
-        data->kinSrc = new pylith::faults::KinSrcStep();assert(data->kinSrc);
-        data->kinSrc->setOriginTime(0.0);
-        data->faultAuxDB.addValue("initiation_time", initiation_time, time_units());
-        data->faultAuxDB.addValue("final_slip_opening", finalslip_opening, slip_units());
-        data->faultAuxDB.addValue("final_slip_left_lateral", finalslip_leftlateral, slip_units());
+        data->faultAuxDB.addValue("cohesion", cohesion, cohesion_units());
         data->faultAuxDB.addValue("static_coefficient", static_coefficient, friction_units());
         data->faultAuxDB.setCoordSys(data->cs);
 
@@ -354,8 +361,6 @@ public:
             fault->setSurfaceLabelName("fault_xpos");
 
             // create static friction rheology and assign to fault
-            //pylith::faults::FrictionStatic testRheology;
-            //pylith::faults::FrictionStatic *testRheology = new pylith::faults::FrictionStatic();
             pylith::faults::FaultRheology *rheology = new pylith::faults::FrictionStatic();
             assert(rheology);
             fault->setFaultRheology(rheology);

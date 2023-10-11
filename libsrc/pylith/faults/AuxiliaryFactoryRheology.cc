@@ -50,7 +50,7 @@ pylith::faults::AuxiliaryFactoryRheology::addCohesion(void) {
     PYLITH_JOURNAL_DEBUG("addCohesion(void)");
 
     const char* subfieldName = "cohesion";
-    const PylithReal densityScale = _normalizer->getPressureScale();
+    const PylithReal pressureScale = _normalizer->getPressureScale();
 
     pylith::topology::Field::Description description;
     description.label = subfieldName;
@@ -59,7 +59,7 @@ pylith::faults::AuxiliaryFactoryRheology::addCohesion(void) {
     description.numComponents = 1;
     description.componentNames.resize(1);
     description.componentNames[0] = subfieldName;
-    description.scale = densityScale;
+    description.scale = pressureScale;
     description.validator = pylith::topology::FieldQuery::validatorNonnegative;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));

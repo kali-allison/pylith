@@ -65,7 +65,7 @@ pylith::feassemble::AuxiliaryFactory::getQueryDB(void) const {
 
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Initialie factory for setting up auxiliary subfields.
+// Initialize factory for setting up auxiliary subfields.
 void
 pylith::feassemble::AuxiliaryFactory::initialize(pylith::topology::Field* field,
                                                  const spatialdata::units::Nondimensional& normalizer,
