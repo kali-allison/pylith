@@ -43,9 +43,14 @@ EXTRA_DIST = \
 	bc/ZeroDB.py \
 	bc/__init__.py \
 	faults/AuxSubfieldsFault.py \
+	faults/AuxSubfieldsFrictionStatic.py \
 	faults/FaultCohesive.py \
 	faults/FaultCohesiveImpulses.py \
 	faults/FaultCohesiveKin.py \
+	faults/FaultCohesiveDyn.py \
+	faults/FaultRheology.py \
+	faults/FaultFriction.py \
+	faults/FrictionStatic.py \
 	faults/KinSrc.py \
 	faults/KinSrcBrune.py \
 	faults/KinSrcConstRate.py \

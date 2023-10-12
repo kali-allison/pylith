@@ -26,6 +26,7 @@ __all__ = [
     "FaultFriction",
     "FrictionStatic",
     "AuxSubfieldsFault",
+    "AuxSubfieldsFrictionStatic",
     "KinSrc",
     "KinSrcConstRate",
     "KinSrcStep",
