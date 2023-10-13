@@ -26,6 +26,7 @@
 
 #include "faultsfwd.hh"                   // forward declarations
 #include "pylith/faults/FaultFriction.hh" // ISA FaultFriction
+#include "spatialdata/spatialdb/spatialdbfwd.hh" // USES SpatialDB
 
 class pylith::faults::FrictionStatic : public pylith::faults::FaultFriction
 {
@@ -41,6 +42,12 @@ public:
 
     /// Deallocate PETSc and local data structures.
     void deallocate(void);
+
+    /** Set the spatial database for filling auxiliary subfields.
+     *
+     * @param[in] value Pointer to database.
+     */
+    void setAuxiliaryFieldDB(spatialdata::spatialdb::SpatialDB* value);
 
     /** Get auxiliary factory associated with physics.
      *

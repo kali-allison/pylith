@@ -364,6 +364,7 @@ public:
             pylith::faults::FaultRheology *rheology = new pylith::faults::FrictionStatic();
             assert(rheology);
             fault->setFaultRheology(rheology);
+            rheology->setAuxiliaryFieldDB(&data->faultAuxDB);
 
             data->faults[0] = fault;
         } // xpos

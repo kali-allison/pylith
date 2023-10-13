@@ -54,6 +54,19 @@ pylith::faults::FrictionStatic::getAuxiliaryFactory(void) {
 } // getAuxiliaryFactory
 
 // ------------------------------------------------------------------------------------------------
+// Set database for auxiliary fields.
+void
+pylith::faults::FrictionStatic::setAuxiliaryFieldDB(spatialdata::spatialdb::SpatialDB* value) {
+    PYLITH_METHOD_BEGIN;
+    PYLITH_COMPONENT_DEBUG("setAuxiliaryFieldDB(value="<<typeid(value).name()<<")");
+
+    assert(_auxiliaryFactory);
+    _auxiliaryFactory->setQueryDB(value);
+
+    PYLITH_METHOD_END;
+} // setAuxiliaryFieldDB
+
+// ------------------------------------------------------------------------------------------------
 // Add rheology subfields to auxiliary field.
 void
 pylith::faults::FrictionStatic::addAuxiliarySubfields(void) {

@@ -119,7 +119,7 @@ pylith::TestFault::_initialize(void) {
                 _data->faults[iFault]->setAuxiliarySubfieldDiscretization(_data->faultAuxSubfields[i], info.basisOrder, info.quadOrder,
                                                                           _data->spaceDim-1, info.cellBasis, info.feSpace, info.isBasisContinuous);
             } // for
-        } // if
+        }
     } // for
 
     // Set up problem.

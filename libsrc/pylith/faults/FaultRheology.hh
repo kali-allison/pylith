@@ -30,6 +30,7 @@
 #include "pylith/topology/topologyfwd.hh" // USES Field
 #include "pylith/utils/arrayfwd.hh" // USES std::vector
 #include "pylith/feassemble/IntegratorDomain.hh" // USES IntegratorDomain::ProjectKernels
+#include "spatialdata/spatialdb/spatialdbfwd.hh" // USES SpatialDB
 
 #include "spatialdata/geocoords/geocoordsfwd.hh" // USES Coordsys
 
@@ -49,6 +50,12 @@ public:
 
     /// Deallocate PETSc and local data structures.
     void deallocate(void);
+
+    /** Set the spatial database for filling auxiliary subfields.
+     *
+     * @param[in] value Pointer to database.
+     */
+    virtual void setAuxiliaryFieldDB(spatialdata::spatialdb::SpatialDB* value) = 0;
 
     /** Get auxiliary factory associated with physics.
      *
