@@ -114,7 +114,7 @@ class pylith::_OneFaultShearNoSlipDyn {
     static double static_coefficient(const double x,
                           const double y)
     {
-        return 0.6;
+        return 0.2;
     } // static_coefficient
 
     static const char *friction_units(void)
@@ -126,7 +126,7 @@ class pylith::_OneFaultShearNoSlipDyn {
     static double cohesion(const double x,
                           const double y)
     {
-        return 1e7;
+        return 2e7;
     } // cohesion
 
     static const char *cohesion_units(void)

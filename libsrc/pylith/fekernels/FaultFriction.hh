@@ -209,9 +209,9 @@ public:
             assert(0);
         } // switch
 
-        const PylithInt i_cohesion = numA-3;
-        const PylithInt i_opening = numA-2;
-        const PylithInt i_openFreeSurface = numA-1;
+        const PylithInt i_cohesion = numA-1;
+        const PylithInt i_opening = numConstants-2;
+        const PylithInt i_openFreeSurface = numConstants-1;
 
         assert(a);
         assert(aOff);
