@@ -380,35 +380,23 @@ pylith::faults::FaultCohesiveDyn::_setKernelsResidual(pylith::feassemble::Integr
     switch (_formulation) {
     case pylith::problems::Physics::QUASISTATIC: {
         // Elasticity equation (displacement) for negative side of the fault.
-        const PetscBdPointFunc f0u_neg = _rheology->getF0uNegKernel();
-        const PetscBdPointFunc f1u_neg = NULL;
-
-        // Elasticity equation (displacement) for positive side of the fault.
-        const PetscBdPointFunc f0u_pos = _rheology->getF0uPosKernel();
-        const PetscBdPointFunc f1u_pos = NULL;
+        const PetscBdPointFunc f0u = _rheology->getF0uKernel();
+        const PetscBdPointFunc f1u = NULL;
 
         // Fault slip constraint equation.
         const PetscBdPointFunc f0l = pylith::fekernels::FaultCohesiveDyn::f0l_slip;
         const PetscBdPointFunc f1l = NULL;
 
-        kernels.resize(3);
-        kernels[0] = ResidualKernels("displacement", integrator_t::LHS, integrator_t::NEGATIVE_FACE,
-                                     f0u_neg, f1u_neg);
-        kernels[1] = ResidualKernels("displacement", integrator_t::LHS, integrator_t::POSITIVE_FACE,
-                                     f0u_pos, f1u_pos);
-        kernels[2] = ResidualKernels("lagrange_multiplier_fault", integrator_t::LHS, integrator_t::FAULT_FACE,
-                                     f0l, f1l);
+        kernels.resize(2);
+        kernels[0] = ResidualKernels("displacement", integrator_t::LHS, integrator_t::FAULT_FACE, f0u, f1u);
+        kernels[1] = ResidualKernels("lagrange_multiplier_fault", integrator_t::LHS, integrator_t::FAULT_FACE, f0l, f1l);
 
         break;
     } // QUASISTATIC
     case pylith::problems::Physics::DYNAMIC_IMEX: {
         // Elasticity equation (displacement) for negative side of the fault.
-        const PetscBdPointFunc g0v_neg = _rheology->getF0uNegKernel();
-        const PetscBdPointFunc g1v_neg = NULL;
-
-        // Elasticity equation (displacement) for positive side of the fault.
-        const PetscBdPointFunc g0v_pos = _rheology->getF0uPosKernel();
-        const PetscBdPointFunc g1v_pos = NULL;
+        const PetscBdPointFunc g0v = _rheology->getF0uKernel();
+        const PetscBdPointFunc g1v = NULL;
 
         // Fault slip constraint equation.
         const PetscBdPointFunc f0l_slip = pylith::fekernels::FaultCohesiveDyn::f0l_slip;
@@ -418,11 +406,10 @@ pylith::faults::FaultCohesiveDyn::_setKernelsResidual(pylith::feassemble::Integr
         const PetscBdPointFunc f0l_dae = pylith::fekernels::FaultCohesiveDyn::f0l_slipAcc;
         const PetscBdPointFunc f1l_dae = NULL;
 
-        kernels.resize(4);
-        kernels[0] = ResidualKernels("velocity ", integrator_t::LHS, integrator_t::NEGATIVE_FACE, g0v_neg, g1v_neg);
-        kernels[1] = ResidualKernels("velocity ", integrator_t::LHS, integrator_t::POSITIVE_FACE, g0v_pos, g1v_pos);
-        kernels[2] = ResidualKernels("lagrange_multiplier_fault", integrator_t::LHS, integrator_t::FAULT_FACE, f0l_slip, f1l_slip);
-        kernels[3] = ResidualKernels("lagrange_multiplier_fault", integrator_t::LHS_WEIGHTED, integrator_t::FAULT_FACE, f0l_dae, f1l_dae);
+        kernels.resize(3);
+        kernels[0] = ResidualKernels("velocity ", integrator_t::LHS, integrator_t::FAULT_FACE, g0v, g1v);
+        kernels[1] = ResidualKernels("lagrange_multiplier_fault", integrator_t::LHS, integrator_t::FAULT_FACE, f0l_slip, f1l_slip);
+        kernels[2] = ResidualKernels("lagrange_multiplier_fault", integrator_t::LHS_WEIGHTED, integrator_t::FAULT_FACE, f0l_dae, f1l_dae);
         break;
     } // DYNAMIC_IMEX
     case pylith::problems::Physics::DYNAMIC:

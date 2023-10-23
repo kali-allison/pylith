@@ -58,18 +58,11 @@ public:
     /// Add rheology subfields to auxiliary field.
     void addAuxiliarySubfields(void);
 
-    /// Get f0u for negative side of fault.
-    PetscBdPointFunc getF0uNegKernel(void) const;
+    /// Get f0u for fault.
+    PetscBdPointFunc getF0uKernel(void) const;
 
-    /// Get f0u for positive side of fault.
-    PetscBdPointFunc getF0uPosKernel(void) const;
-
-
-    /// Get Jf0uu for negative side of fault.
-    PetscBdPointJac getJf0uuNegKernel(void) const;
-
-    /// Get Jf0uu for positive side of fault.
-    PetscBdPointJac getJf0uuPosKernel(void) const;
+    /// Get Jf0uu for fault.
+    PetscBdPointJac getJf0uuKernel(void) const;
 
     // PRIVATE MEMBERS ////////////////////////////////////////////////////////////////////////////
 private:

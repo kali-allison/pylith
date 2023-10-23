@@ -314,10 +314,11 @@ public:
     void f0u(const Context frictionContext,
              void* rheologyContext,
              frictioncoeffn_type frictionCoefficientFn,
-             bool faultSidePos,
              PylithScalar f0[]) {
         
         const PylithInt spaceDim = frictionContext.dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+        const PylithInt offN = 0;
+        const PylithInt offP = offN + spaceDim;
 
         switch (spaceDim) {
         case 2: {
@@ -326,8 +327,9 @@ public:
             friction(frictionContext,rheologyContext,frictionCoefficientFn,frictionDirFn, tractionFriction);
             for (PylithInt i = 0; i < spaceDim; ++i) {
                 PylithReal val = tractionFriction[i] - frictionContext.tractionGlobalCoords[i];
-                (faultSidePos) ? f0[i] += -val : f0[i] += val;
                 assert(!isnan(val));
+                f0[offN + i] += -val;
+                f0[offP + i] += +val;
             }
             break;
         }
@@ -337,7 +339,9 @@ public:
             friction(frictionContext,rheologyContext,frictionCoefficientFn,frictionDirFn, tractionFriction);
             for (PylithInt i = 0; i < spaceDim; ++i) {
                 PylithReal val = tractionFriction[i] - frictionContext.tractionGlobalCoords[i];
-                (faultSidePos) ? f0[i] += -val : f0[i] += val;
+                assert(!isnan(val));
+                f0[offN + i] += -val;
+                f0[offP + i] += +val;
             }
             break;
         }

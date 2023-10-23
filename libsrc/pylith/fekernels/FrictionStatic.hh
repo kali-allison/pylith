@@ -127,9 +127,9 @@ public:
     } // friction_coefficient
 
     // --------------------------------------------------------------------------------------------
-    // residual fu0 on negative side of fault
+    // residual fu0
     static inline
-    void f0u_neg(const PylithInt dim,
+    void f0u(const PylithInt dim,
                 const PylithInt numS,
                 const PylithInt numA,
                 const PylithInt sOff[],
@@ -162,52 +162,13 @@ public:
         // call FaultFriction::f0u(), passing in FrictionStatic context
         // Analogous to IsotropicLinearElasticity::f1v_infinitessimalStrain;
         // instead of calling Elasticity::f1v we will call FaultFriction::f0u
-        PylithInt faultSidePos = 0;
-        pylith::fekernels::FaultFriction::f0u(frictionContext,&rheologyContext,frictionCoefficient,faultSidePos,f0);
-    } // f0u_neg
-
-// --------------------------------------------------------------------------------------------
-    // residual fu0 on positive side of fault
-    static inline
-    void f0u_pos(const PylithInt dim,
-                const PylithInt numS,
-                const PylithInt numA,
-                const PylithInt sOff[],
-                const PylithInt sOff_x[],
-                const PylithScalar s[],
-                const PylithScalar s_t[],
-                const PylithScalar s_x[],
-                const PylithInt aOff[],
-                const PylithInt aOff_x[],
-                const PylithScalar a[],
-                const PylithScalar a_t[],
-                const PylithScalar a_x[],
-                const PylithReal t,
-                const PylithScalar x[],
-                const PylithScalar n[],
-                const PylithInt numConstants,
-                const PylithScalar constants[],
-                PylithScalar f0[]) {
-
-        // create FaultFriction context
-        pylith::fekernels::FaultFriction::Context frictionContext;
-        pylith::fekernels::FaultFriction::setContext(&frictionContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
-            t, x, n, numConstants, constants);
-
-        // create FrictionStatic context
-        pylith::fekernels::FrictionStatic::Context rheologyContext;
-        pylith::fekernels::FrictionStatic::setContext(&rheologyContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
-            t, x, n, numConstants, constants);
-        
-        bool faultSidePos = 1;
-        pylith::fekernels::FaultFriction::f0u(frictionContext,&rheologyContext,frictionCoefficient,faultSidePos,f0);
-    } // f0u_pos
-
+        pylith::fekernels::FaultFriction::f0u(frictionContext, &rheologyContext,frictionCoefficient, f0);
+    } // f0u
 
 // --------------------------------------------------------------------------------------------
     // Jacobian Jf0uu on negative side of fault: Jf0uu = 0
     static inline
-    void Jf0uu_neg(const PylithInt dim,
+    void Jf0uu(const PylithInt dim,
                    const PylithInt numS,
                    const PylithInt numA,
                    const PylithInt sOff[],
@@ -229,32 +190,6 @@ public:
                    PylithScalar Jf0[]) {
 
     } // Jf0uu_neg
-
-// --------------------------------------------------------------------------------------------
-    // Jacobian Jf0uu on positive side of fault: Jf0uu = 0
-    static inline
-    void Jf0uu_pos(const PylithInt dim,
-                   const PylithInt numS,
-                   const PylithInt numA,
-                   const PylithInt sOff[],
-                   const PylithInt sOff_x[],
-                   const PylithScalar s[],
-                   const PylithScalar s_t[],
-                   const PylithScalar s_x[],
-                   const PylithInt aOff[],
-                   const PylithInt aOff_x[],
-                   const PylithScalar a[],
-                   const PylithScalar a_t[],
-                   const PylithScalar a_x[],
-                   const PylithReal t,
-                   const PylithReal s_tshift,
-                   const PylithScalar x[],
-                   const PylithReal n[],
-                   const PylithInt numConstants,
-                   const PylithScalar constants[],
-                   PylithScalar Jf0[]) {
-    } // Jf0uu_pos
-
 
 }; // FrictionStatic`
 

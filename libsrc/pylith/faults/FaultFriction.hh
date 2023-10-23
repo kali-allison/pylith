@@ -43,36 +43,8 @@ public:
     /// Deallocate PETSc and local data structures.
     void deallocate(void);
 
-    /** Set the spatial database for filling auxiliary subfields.
-     *
-     * @param[in] value Pointer to database.
-     */
-    virtual void setAuxiliaryFieldDB(spatialdata::spatialdb::SpatialDB* value) = 0;
-
-    /** Get auxiliary factory associated with physics.
-     *
-     * @return Auxiliary factory for physics object.
-     */
-    virtual pylith::faults::AuxiliaryFactoryRheology *getAuxiliaryFactory(void) = 0;
-
     /// Add rheology subfields to auxiliary field.
     virtual void addAuxiliarySubfields(void);
-
-    /// Get f0u for negative side of fault.
-    virtual
-    PetscBdPointFunc getF0uNegKernel(void) const = 0;
-
-    /// Get f0u for positive side of fault.
-    virtual
-    PetscBdPointFunc getF0uPosKernel(void) const = 0;
-
-    /// Get Jf0uu for negative side of fault.
-    virtual
-    PetscBdPointJac getJf0uuNegKernel(void) const = 0;
-
-    /// Get Jf0uu for positive side of fault.
-    virtual
-    PetscBdPointJac getJf0uuPosKernel(void) const = 0;
 
     // PRIVATE MEMBERS ////////////////////////////////////////////////////////////////////////////
 private:
