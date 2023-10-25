@@ -438,31 +438,22 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
     std::vector<JacobianKernels> kernels;
     switch (_formulation) {
     case QUASISTATIC: {
-        //const PetscBdPointJac Jf0uu_neg = _rheology->getJf0uuNegKernel();
-        const PetscBdPointJac Jf0ul_neg = pylith::fekernels::FaultCohesiveDyn::Jf0ul_neg;
-        const PetscBdPointJac Jf1ul_neg = NULL;
-        const PetscBdPointJac Jf2ul_neg = NULL;
-        const PetscBdPointJac Jf3ul_neg = NULL;
-
-        //const PetscBdPointJac Jf0uu_pos = _rheology->getJf0uuPosKernel();
-        const PetscBdPointJac Jf0ul_pos = pylith::fekernels::FaultCohesiveDyn::Jf0ul_pos;
-        const PetscBdPointJac Jf1ul_pos = NULL;
-        const PetscBdPointJac Jf2ul_pos = NULL;
-        const PetscBdPointJac Jf3ul_pos = NULL;
+        const PetscBdPointJac Jf0ul = pylith::fekernels::FaultCohesiveDyn::Jf0ul;
+        const PetscBdPointJac Jf1ul = NULL;
+        const PetscBdPointJac Jf2ul = NULL;
+        const PetscBdPointJac Jf3ul = NULL;
 
         const PetscBdPointJac Jf0lu = pylith::fekernels::FaultCohesiveDyn::Jf0lu;
         const PetscBdPointJac Jf1lu = NULL;
         const PetscBdPointJac Jf2lu = NULL;
         const PetscBdPointJac Jf3lu = NULL;
 
-        kernels.resize(3);
+        kernels.resize(2);
         const char* nameDisplacement = "displacement";
         const char* nameLagrangeMultiplier = "lagrange_multiplier_fault";
         kernels[0] = JacobianKernels(nameDisplacement, nameLagrangeMultiplier, integrator_t::LHS,
-                                     integrator_t::NEGATIVE_FACE, Jf0ul_neg, Jf1ul_neg, Jf2ul_neg, Jf3ul_neg);
-        kernels[1] = JacobianKernels(nameDisplacement, nameLagrangeMultiplier, integrator_t::LHS,
-                                     integrator_t::POSITIVE_FACE, Jf0ul_pos, Jf1ul_pos, Jf2ul_pos, Jf3ul_pos);
-        kernels[2] = JacobianKernels(nameLagrangeMultiplier, nameDisplacement, integrator_t::LHS,
+                                     integrator_t::FAULT_FACE, Jf0ul, Jf1ul, Jf2ul, Jf3ul);
+        kernels[1] = JacobianKernels(nameLagrangeMultiplier, nameDisplacement, integrator_t::LHS,
                                      integrator_t::FAULT_FACE, Jf0lu, Jf1lu, Jf2lu, Jf3lu);
         break;
     } // QUASISTATIC

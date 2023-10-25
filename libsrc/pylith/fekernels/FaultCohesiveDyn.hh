@@ -203,10 +203,10 @@ public:
     }
 
     // --------------------------------------------------------------------------------------------
-    /** Jf0 function for displacement equation: -\lambda (neg side).
+    /** Jf0 function for displacement equation: +\lambda (neg side) and -\lambda (pos side).
      */
     static inline
-    void Jf0ul_neg(const PylithInt dim,
+    void Jf0ul(const PylithInt dim,
                    const PylithInt numS,
                    const PylithInt numA,
                    const PylithInt sOff[],
@@ -233,54 +233,18 @@ public:
 
         const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
 
+        const PylithInt ncols = spaceDim;
         const PylithInt gOffN = 0;
-        const PylithInt ncols = spaceDim;
+        const PylithInt gOffP = gOffN + spaceDim * ncols;
 
         for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[(gOffN+i)*ncols+i] += -1.0;
+            Jf0[gOffN+i*ncols+i] += +1.0; // neg side
+            Jf0[gOffP+i*ncols+i] += -1.0; // pos side
         } // for
     }
 
     // --------------------------------------------------------------------------------------------
-    /** Jf0 function for displacement equation: +\lambda (pos side).
-     */
-    static inline
-    void Jf0ul_pos(const PylithInt dim,
-                   const PylithInt numS,
-                   const PylithInt numA,
-                   const PylithInt sOff[],
-                   const PylithInt sOff_x[],
-                   const PylithScalar s[],
-                   const PylithScalar s_t[],
-                   const PylithScalar s_x[],
-                   const PylithInt aOff[],
-                   const PylithInt aOff_x[],
-                   const PylithScalar a[],
-                   const PylithScalar a_t[],
-                   const PylithScalar a_x[],
-                   const PylithReal t,
-                   const PylithReal s_tshift,
-                   const PylithScalar x[],
-                   const PylithReal n[],
-                   const PylithInt numConstants,
-                   const PylithScalar constants[],
-                   PylithScalar Jf0[]) {
-        assert(numS >= 2);
-        assert(Jf0);
-        assert(sOff);
-        assert(n);
-
-        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
-
-        const PylithInt ncols = spaceDim;
-
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*ncols+i] += 1.0;
-        } // for
-    }
-
-    // --------------------------------------------------------------------------------------------
-    /** Jf0 function for slip constraint equation: +\lambda (pos side), -\lambda (neg side).
+    /** Jf0 function for slip constraint equation: -\lambda (pos side), +\lambda (neg side).
      *
      * Solution fields: [disp(dim), ..., lagrange(dim)]
      */
@@ -315,13 +279,14 @@ public:
         const PylithInt sOffLagrange = sOff[numS-1];
         const PylithScalar* lagrange = &s[sOffLagrange];
 
-        const PylithInt gOffN = 0;
-        const PylithInt gOffP = gOffN+spaceDim*spaceDim;
         const PylithInt ncols = spaceDim;
+        const PylithInt gOffN = 0;
+        const PylithInt gOffP = gOffN + spaceDim * ncols;
 
+        // :TODO: Need to include dTraction/du (fault rheology)
         for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[gOffN+i*ncols+i] += -lagrange[i]; // neg side
-            Jf0[gOffP+i*ncols+i] += +lagrange[i]; // pos side
+            Jf0[gOffN+i*ncols+i] += +1.0; // neg side
+            Jf0[gOffP+i*ncols+i] += -1.0; // pos side
         } // for
     }
 
