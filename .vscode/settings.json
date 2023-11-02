@@ -17,7 +17,8 @@
         "cmath": "cpp",
         "complex": "cpp",
         "faultcohesiveimpulses.hh": "c",
-        "faultfriction.hh": "c"
+        "faultfriction.hh": "c",
+        "valarray": "cpp"
     },
     "python.formatting.autopep8Args": [
         "-max-line-length",

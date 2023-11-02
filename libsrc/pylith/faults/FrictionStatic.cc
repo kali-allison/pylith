@@ -76,8 +76,8 @@ pylith::faults::FrictionStatic::addAuxiliarySubfields(void) {
     // :ATTENTION: The order for adding subfields must match the order of the auxiliary fields in the point-wise
     // functions (kernels).
     //FaultFriction::addAuxiliarySubfields(_auxiliaryFactory);
-    _auxiliaryFactory->addCohesion();
     _auxiliaryFactory->addStaticCoefficient();
+    _auxiliaryFactory->addCohesion();
     
     PYLITH_METHOD_END;
 } // addAuxiliarySubfields

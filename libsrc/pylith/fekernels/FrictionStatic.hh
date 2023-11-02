@@ -98,7 +98,7 @@ public:
                     const PylithScalar constants[]) {
         assert(context);
 
-        const PylithInt i_static = numA-1;
+        const PylithInt i_static = numA-2;
 
         assert(a);
         assert(aOff);

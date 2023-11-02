@@ -46,6 +46,15 @@ public:
     /// Add rheology subfields to auxiliary field.
     virtual void addAuxiliarySubfields(void);
 
+    /** Update kernel constants.
+     *
+     * @param[inout] kernelConstants Array of constants used in integration kernels.
+     * @param[in] dt Current time step.
+     */
+    virtual
+    void updateKernelConstants(pylith::real_array* kernelConstants,
+                               const PylithReal dt) const;
+
     // PRIVATE MEMBERS ////////////////////////////////////////////////////////////////////////////
 private:
 

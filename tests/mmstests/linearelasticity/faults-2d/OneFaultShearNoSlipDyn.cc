@@ -53,6 +53,7 @@ namespace pylith {
 
 // ------------------------------------------------------------------------------------------------
 class pylith::_OneFaultShearNoSlipDyn {
+
     // Density
     static double density(const double x,
                           const double y) {
@@ -114,7 +115,7 @@ class pylith::_OneFaultShearNoSlipDyn {
     static double static_coefficient(const double x,
                           const double y)
     {
-        return 0.2;
+        return 0.6;
     } // static_coefficient
 
     static const char *friction_units(void)
@@ -126,7 +127,7 @@ class pylith::_OneFaultShearNoSlipDyn {
     static double cohesion(const double x,
                           const double y)
     {
-        return 2e7;
+        return 2.25e7;
     } // cohesion
 
     static const char *cohesion_units(void)
@@ -136,11 +137,16 @@ class pylith::_OneFaultShearNoSlipDyn {
 
     // Solution subfields.
     static double strain_xx(void) {
-        return 0.0;
+        return 0.5;
     } // strain_xx
 
-    static double strain_yy(void) {
-        return 0.0;
+    static double strain_yy(const double x,
+                         const double y) {
+        const double mu = density(x, y) * vs(x, y) * vs(x, y);
+        const double lambda = density(x, y)*vp(x,y)*vp(x,y) - 2*mu;
+        const double nu = lambda / (2*(lambda+mu)); // Poisson's ratio
+
+        return -nu * strain_xx();
     } // strain_yy
 
     static double strain_xy(void) {
@@ -150,12 +156,12 @@ class pylith::_OneFaultShearNoSlipDyn {
     // Displacement
     static double disp_x(const double x,
                          const double y) {
-        return strain_xx()*x + strain_xy()*y;
+        return strain_xx()*x + 2*strain_xy()*y;
     } // disp_x
 
     static double disp_y(const double x,
                          const double y) {
-        return strain_xy()*x + strain_yy()*y;
+        return 2*strain_xy()*x + strain_yy(x,y)*y;
     } // disp_y
 
     static const char* disp_units(void) {
@@ -164,12 +170,16 @@ class pylith::_OneFaultShearNoSlipDyn {
 
     static double faulttraction_x(const double x,
                                   const double y) {
-        return 0.0;
+        const double mu = density(x, y) * vs(x, y) * vs(x, y);
+        const double lambda = density(x, y)*vp(x,y)*vp(x,y) - 2*mu;
+
+        return (lambda+2*mu)*strain_xx() / 2.25e+10;
     } // faulttraction_x
 
     static double faulttraction_y(const double x, //faulttraction xy
                                   const double y) {
         const double mu = density(x, y) * vs(x, y) * vs(x, y);
+        const double lambda = density(x, y)*vp(x,y)*vp(x,y) - 2*mu;
 
         return strain_xy() * 2.0 * mu / 2.25e+10;
     } // faulttraction_y
@@ -196,10 +206,11 @@ class pylith::_OneFaultShearNoSlipDyn {
                             PylithScalar r0[]) {
         assert(r0);
         const double mu = density(x[0], x[1]) * vs(x[0], x[1]) * vs(x[0], x[1]);//x[0] and x[1] are x and y coordinates
+        const double lambda = density(x[0], x[1])*vp(x[0], x[1])*vp(x[0], x[1]) - 2*mu;
 
         const PylithScalar tanDir[2] = {-n[1], n[0] }; //tanDir[0]: The x-component of the tangent direction vector. tanDir[1]: The y-component of the tangent direction vector.
         const PylithScalar tractionShear = -strain_xy() * 2.0 * mu / 2.25e+10;
-        const PylithScalar tractionNormal = 0.0;
+        const PylithScalar tractionNormal = (lambda+2*mu)*strain_xx() / 2.25e+10;
         r0[0] += tractionShear*tanDir[0] + tractionNormal*n[0];
         r0[1] += tractionShear*tanDir[1] + tractionNormal*n[1];
     } // boundary_tractions

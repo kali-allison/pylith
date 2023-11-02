@@ -58,4 +58,22 @@ pylith::faults::FaultFriction::addAuxiliarySubfields(void) {
     PYLITH_METHOD_END;
 } // addAuxiliarySubfields
 
+// ------------------------------------------------------------------------------------------------
+// Update kernel constants.
+void
+pylith::faults::FaultFriction::updateKernelConstants(pylith::real_array* kernelConstants,
+                                                            const PylithReal dt) const {
+    PYLITH_METHOD_BEGIN;
+    PYLITH_COMPONENT_DEBUG("updateKernelConstants(kernelConstants"<<kernelConstants<<", dt="<<dt<<")");
+
+    assert(kernelConstants);
+     
+    if (9 != kernelConstants->size()) { kernelConstants->resize(9);}
+    (*kernelConstants)[6] = dt;//dt;
+    (*kernelConstants)[7] = 0; // opening
+    (*kernelConstants)[8] = 1; // openFreeSurface
+
+    PYLITH_METHOD_END;
+} // updateKernelConstants
+
 // End of file
