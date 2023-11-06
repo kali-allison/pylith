@@ -127,7 +127,8 @@ class pylith::_OneFaultShearNoSlipDyn {
     static double cohesion(const double x,
                           const double y)
     {
-        return 2.25e7;
+        //return 2.25e7;
+        return 2.25e9;
     } // cohesion
 
     static const char *cohesion_units(void)
@@ -137,7 +138,7 @@ class pylith::_OneFaultShearNoSlipDyn {
 
     // Solution subfields.
     static double strain_xx(void) {
-        return 0.5;
+        return -0.4;
     } // strain_xx
 
     static double strain_yy(const double x,
@@ -173,15 +174,28 @@ class pylith::_OneFaultShearNoSlipDyn {
         const double mu = density(x, y) * vs(x, y) * vs(x, y);
         const double lambda = density(x, y)*vp(x,y)*vp(x,y) - 2*mu;
 
-        return (lambda+2*mu)*strain_xx() / 2.25e+10;
+        return ((lambda+2*mu)*strain_xx() + lambda* strain_yy(x,y)) / 2.25e+10;
     } // faulttraction_x
 
     static double faulttraction_y(const double x, //faulttraction xy
                                   const double y) {
         const double mu = density(x, y) * vs(x, y) * vs(x, y);
-        const double lambda = density(x, y)*vp(x,y)*vp(x,y) - 2*mu;
 
         return strain_xy() * 2.0 * mu / 2.25e+10;
+    } // faulttraction_y
+
+    static double allowableFrictionTraction(const double x, //allowableFrictionTraction
+                                  const double y) {
+        const double co = cohesion(x,y);
+        const double fricCoeff = static_coefficient(x,y);
+        const double mu = density(x, y) * vs(x, y) * vs(x, y);
+        const double lambda = density(x, y)*vp(x,y)*vp(x,y) - 2*mu;
+        const double normalTraction = lambda*(strain_xx() + strain_yy(x,y)) + 2*mu*strain_xx();
+
+        const double Tf = (co + fricCoeff * fabs(normalTraction))  / 2.25e+10;
+
+        //return (co + fricCoeff * abs(normalTraction))  / 2.25e+10;
+        return Tf;
     } // faulttraction_y
 
     static
@@ -210,10 +224,12 @@ class pylith::_OneFaultShearNoSlipDyn {
 
         const PylithScalar tanDir[2] = {-n[1], n[0] }; //tanDir[0]: The x-component of the tangent direction vector. tanDir[1]: The y-component of the tangent direction vector.
         const PylithScalar tractionShear = -strain_xy() * 2.0 * mu / 2.25e+10;
-        const PylithScalar tractionNormal = (lambda+2*mu)*strain_xx() / 2.25e+10;
+        const PylithScalar tractionNormal = -(lambda+2*mu)*strain_xx() / 2.25e+10;
         r0[0] += tractionShear*tanDir[0] + tractionNormal*n[0];
         r0[1] += tractionShear*tanDir[1] + tractionNormal*n[1];
     } // boundary_tractions
+
+    
 
     static PetscErrorCode solnkernel_disp(PetscInt spaceDim,
                                           PetscReal t,
@@ -243,8 +259,13 @@ class pylith::_OneFaultShearNoSlipDyn {
         assert(2 == numComponents);
         assert(s);
 
-        s[0] = faulttraction_x(x[0], x[1]);
-        s[1] = faulttraction_y(x[0], x[1]);
+        // original implementation
+        //s[0] = faulttraction_x(x[0], x[1]);
+        //[1] = faulttraction_y(x[0], x[1]);
+
+        // new version
+        s[0] = -faulttraction_x(x[0], x[1]);
+        s[1] = allowableFrictionTraction(x[0], x[1]) - faulttraction_y(x[0], x[1]);
 
         return PETSC_SUCCESS;
     } // solnkernel_lagrangemultiplier
