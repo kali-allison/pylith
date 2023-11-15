@@ -73,7 +73,7 @@ public:
         PylithScalar dt; // time step
         const PylithScalar* n; // normal to fault
         const PylithScalar* refDir; // reference direction
-        const PylithScalar* tractionGlobalCoords; // in global coordinates
+        const PylithScalar* lagrangeMultGlobalCoords; // in global coordinates
         const PylithScalar* dispN; // (spaceDim) displacement negative side of fault
         const PylithScalar* dispP; // (spaceDim) displacement positive side of fault
         const PylithScalar* velN; // (spaceDim) velocity negative side of fault
@@ -89,7 +89,7 @@ public:
         dt(0.0),
         n(NULL),
         refDir(NULL),
-        tractionGlobalCoords(NULL),
+        lagrangeMultGlobalCoords(NULL),
         dispN(NULL),
         dispP(NULL),
         velN(NULL),
@@ -157,7 +157,7 @@ public:
         
         // the lagrange multipliers are the tractions on the fault
         const PylithInt sOffLagrange = sOff[numS-1];
-        context->tractionGlobalCoords = &s[sOffLagrange];
+        context->lagrangeMultGlobalCoords = &s[sOffLagrange];
 
         const PylithInt i_cohesion = numA-1;
 
@@ -172,7 +172,7 @@ public:
         //context->openFreeSurface = constants[numConstants - 1];assert(context->openFreeSurface >= 0.0);
     } // setContext
 
-     // --------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     /** Compute slip in fault coords from dispN and dispP in global coords,
      * or compute slipVel in fault coords from velN and velP in global coords.
      *
@@ -252,12 +252,12 @@ public:
         frictionCoefFn(frictionContext.t, slipMagTangent, slipVelMagTangent, rheologyContext, &frictionCoef);
 
         // compute magnitude of friction
-        PylithReal tractionFaultCoords[2];
-        pylith::fekernels::BoundaryDirections::toTN(tractionFaultCoords,frictionContext.tractionGlobalCoords,frictionContext.n);
-        PylithReal tractionNormalFaultCoords = (2 == spaceDim) ? tractionFaultCoords[1] : tractionFaultCoords[2];
+        PylithReal lagrangeMultFaultCoords[2];
+        pylith::fekernels::BoundaryDirections::toTN(lagrangeMultFaultCoords,frictionContext.lagrangeMultGlobalCoords,frictionContext.n);
+        PylithReal tractionNormalFaultCoords = (2 == spaceDim) ? -lagrangeMultFaultCoords[1] : -lagrangeMultFaultCoords[2];
         PylithReal frictionMag;
         if (0.0 == frictionContext.opening) {
-            frictionMag = frictionContext.cohesion + frictionCoef * tractionNormalFaultCoords;
+            frictionMag = frictionContext.cohesion - frictionCoef * tractionNormalFaultCoords;
         } else if (!frictionContext.openFreeSurface) {
             frictionMag = frictionContext.cohesion;
         } else {
@@ -282,9 +282,10 @@ public:
         assert(tractionFrictionFaultCoords);
 
         if (slipVelMagTangent == 0) {
-            PylithReal tractionFaultCoords[2];
-            pylith::fekernels::BoundaryDirections::toTN(tractionFaultCoords,context.tractionGlobalCoords,context.n);
-            tractionFrictionFaultCoords[0] = -tractionFaultCoords[0]/fabs(tractionFaultCoords[0]) * frictionMag;
+            PylithReal lagrangeMultFaultCoords[2];
+            pylith::fekernels::BoundaryDirections::toTN(lagrangeMultFaultCoords,context.lagrangeMultGlobalCoords,context.n);
+            PylithReal a = frictionMag - lagrangeMultFaultCoords[0];
+            tractionFrictionFaultCoords[0] = a/sqrt(a*a) * frictionMag;
         }
         else {
             tractionFrictionFaultCoords[0] = -slipVelFaultCoords[0]/fabs(slipVelMagTangent) * frictionMag;
@@ -304,14 +305,15 @@ public:
         assert(tractionFrictionFaultCoords);
 
         if (slipVelMagTangent == 0) {
-            PylithReal tractionFaultCoords[3];
+            PylithReal lagrangeMultFaultCoords[3];
             const PylithScalar* refDir1 = &context.refDir[0];
             const PylithScalar* refDir2 = &context.refDir[3];
-            pylith::fekernels::BoundaryDirections::toTN3D(tractionFaultCoords,context.tractionGlobalCoords,refDir1,refDir2,context.n);
-            PylithReal tractionMagTangent = sqrt(pow(tractionFaultCoords[0],2) + pow(tractionFaultCoords[1],2));
-
-            tractionFrictionFaultCoords[0] = -tractionFaultCoords[0]/tractionMagTangent * frictionMag;
-            tractionFrictionFaultCoords[1] = -tractionFaultCoords[1]/tractionMagTangent * frictionMag;
+            pylith::fekernels::BoundaryDirections::toTN3D(lagrangeMultFaultCoords,context.lagrangeMultGlobalCoords,refDir1,refDir2,context.n);
+            PylithReal a = frictionMag - lagrangeMultFaultCoords[0];
+            PylithReal b = frictionMag - lagrangeMultFaultCoords[1];
+            PylithReal temp = sqrt(a*a + b*b);
+            tractionFrictionFaultCoords[0] = a/temp * frictionMag;
+            tractionFrictionFaultCoords[1] = b/temp * frictionMag;
         }
         else {
             tractionFrictionFaultCoords[0] = -slipVelFaultCoords[0]/slipVelMagTangent * frictionMag;
@@ -321,7 +323,7 @@ public:
     } // frictionDir3D
 
     // --------------------------------------------------------------------------------------------
-    /** f0 function for elasticity equation: f0u = +\lambda (neg side).
+    /** f0 function for elasticity equation: f0u = -(traction_friction - lambda).
      *
      * Solution fields: [disp(dim), ..., lagrange(dim)]
      */
@@ -343,10 +345,10 @@ public:
             PylithReal tractionFrictionGlobalCoords[2];
             pylith::fekernels::BoundaryDirections::toXY(tractionFrictionGlobalCoords,tractionFrictionFaultCoords,frictionContext.n);
             for (PylithInt i = 0; i < spaceDim; ++i) {
-                PylithReal val = tractionFrictionGlobalCoords[i] + frictionContext.tractionGlobalCoords[i];
+                PylithReal val = tractionFrictionGlobalCoords[i] - frictionContext.lagrangeMultGlobalCoords[i];
                 assert(!isnan(val));
-                f0[offN + i] += -val;
-                f0[offP + i] += +val;
+                f0[offN + i] += -val; // was - val
+                f0[offP + i] += -val; // was + val
             }
             break;
         }
@@ -359,7 +361,7 @@ public:
             const PylithScalar* refDir2 = &frictionContext.refDir[3];
             pylith::fekernels::BoundaryDirections::toXYZ(tractionFrictionGlobalCoords,tractionFrictionFaultCoords,refDir1,refDir2,frictionContext.n);
             for (PylithInt i = 0; i < spaceDim; ++i) {
-                PylithReal val = tractionFrictionGlobalCoords[i] - frictionContext.tractionGlobalCoords[i];
+                PylithReal val = tractionFrictionGlobalCoords[i] - frictionContext.lagrangeMultGlobalCoords[i];
                 assert(!isnan(val));
                 f0[offN + i] += -val;
                 f0[offP + i] += +val;

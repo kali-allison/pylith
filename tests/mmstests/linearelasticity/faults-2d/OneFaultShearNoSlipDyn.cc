@@ -157,12 +157,12 @@ class pylith::_OneFaultShearNoSlipDyn {
     // Displacement
     static double disp_x(const double x,
                          const double y) {
-        return strain_xx()*x + 2*strain_xy()*y;
+        return strain_xx()*x + strain_xy()*y;
     } // disp_x
 
     static double disp_y(const double x,
                          const double y) {
-        return 2*strain_xy()*x + strain_yy(x,y)*y;
+        return strain_xy()*x + strain_yy(x,y)*y;
     } // disp_y
 
     static const char* disp_units(void) {
@@ -194,7 +194,6 @@ class pylith::_OneFaultShearNoSlipDyn {
 
         const double Tf = (co + fricCoeff * fabs(normalTraction))  / 2.25e+10;
 
-        //return (co + fricCoeff * abs(normalTraction))  / 2.25e+10;
         return Tf;
     } // faulttraction_y
 
@@ -223,8 +222,8 @@ class pylith::_OneFaultShearNoSlipDyn {
         const double lambda = density(x[0], x[1])*vp(x[0], x[1])*vp(x[0], x[1]) - 2*mu;
 
         const PylithScalar tanDir[2] = {-n[1], n[0] }; //tanDir[0]: The x-component of the tangent direction vector. tanDir[1]: The y-component of the tangent direction vector.
-        const PylithScalar tractionShear = -strain_xy() * 2.0 * mu / 2.25e+10;
-        const PylithScalar tractionNormal = -(lambda+2*mu)*strain_xx() / 2.25e+10;
+        const PylithScalar tractionShear = strain_xy() * 2.0 * mu / 2.25e+10;
+        const PylithScalar tractionNormal = (lambda*strain_xx() + (lambda+2*mu)*strain_yy(x[0], x[1])) / 2.25e+10;
         r0[0] += tractionShear*tanDir[0] + tractionNormal*n[0];
         r0[1] += tractionShear*tanDir[1] + tractionNormal*n[1];
     } // boundary_tractions

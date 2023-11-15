@@ -92,7 +92,7 @@ public:
     void updateKernelConstants(pylith::real_array* kernelConstants,
                                const PylithReal dt) const;
     
-    /// Get f0u for fault.
+    // Get f0u for fault.
     virtual
     PetscBdPointFunc getF0uKernel(void) const = 0;
 

@@ -379,7 +379,7 @@ pylith::faults::FaultCohesiveDyn::_setKernelsResidual(pylith::feassemble::Integr
     //f0l kernel that enforces traction * slip_opening = 0; traction only = 0 if slip opening > 0
     switch (_formulation) {
     case pylith::problems::Physics::QUASISTATIC: {
-        // Elasticity equation (displacement) for negative side of the fault.
+        // Elasticity equation (displacement) for fault.
         const PetscBdPointFunc f0u = _rheology->getF0uKernel();
         const PetscBdPointFunc f1u = NULL;
 
@@ -438,6 +438,11 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
     std::vector<JacobianKernels> kernels;
     switch (_formulation) {
     case QUASISTATIC: {
+        const PetscBdPointJac Jf0uu = _rheology->getJf0uuKernel();//pylith::fekernels::FaultCohesiveDyn::Jf0uu;
+        const PetscBdPointJac Jf1uu = NULL;
+        const PetscBdPointJac Jf2uu = NULL;
+        const PetscBdPointJac Jf3uu = NULL;
+
         const PetscBdPointJac Jf0ul = pylith::fekernels::FaultCohesiveDyn::Jf0ul;
         const PetscBdPointJac Jf1ul = NULL;
         const PetscBdPointJac Jf2ul = NULL;
@@ -448,6 +453,12 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
         const PetscBdPointJac Jf2lu = NULL;
         const PetscBdPointJac Jf3lu = NULL;
 
+        const PetscBdPointJac Jf0ll = pylith::fekernels::FaultCohesiveDyn::Jf0ll;
+        const PetscBdPointJac Jf1ll = NULL;
+        const PetscBdPointJac Jf2ll = NULL;
+        const PetscBdPointJac Jf3ll = NULL;
+
+        /*
         kernels.resize(2);
         const char* nameDisplacement = "displacement";
         const char* nameLagrangeMultiplier = "lagrange_multiplier_fault";
@@ -455,6 +466,19 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
                                      integrator_t::FAULT_FACE, Jf0ul, Jf1ul, Jf2ul, Jf3ul);
         kernels[1] = JacobianKernels(nameLagrangeMultiplier, nameDisplacement, integrator_t::LHS,
                                      integrator_t::FAULT_FACE, Jf0lu, Jf1lu, Jf2lu, Jf3lu);
+        */
+
+        kernels.resize(4);
+        const char* nameDisplacement = "displacement";
+        const char* nameLagrangeMultiplier = "lagrange_multiplier_fault";
+        kernels[0] = JacobianKernels(nameDisplacement, nameLagrangeMultiplier, integrator_t::LHS,
+                                     integrator_t::FAULT_FACE, Jf0uu, Jf1uu, Jf2uu, Jf3uu);
+        kernels[1] = JacobianKernels(nameDisplacement, nameLagrangeMultiplier, integrator_t::LHS,
+                                     integrator_t::FAULT_FACE, Jf0ul, Jf1ul, Jf2ul, Jf3ul);
+        kernels[2] = JacobianKernels(nameLagrangeMultiplier, nameDisplacement, integrator_t::LHS,
+                                     integrator_t::FAULT_FACE, Jf0lu, Jf1lu, Jf2lu, Jf3lu);
+        kernels[3] = JacobianKernels(nameLagrangeMultiplier, nameDisplacement, integrator_t::LHS,
+                                     integrator_t::FAULT_FACE, Jf0ll, Jf1ll, Jf2ll, Jf3ll);
         break;
     } // QUASISTATIC
     case pylith::problems::Physics::DYNAMIC_IMEX: {

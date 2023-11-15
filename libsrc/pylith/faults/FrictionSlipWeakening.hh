@@ -21,53 +21,55 @@
  * @brief C++ abstract base class for friction constitutive models.
  */
 
-#if !defined(pylith_faults_faultfriction_hh)
-#define pylith_faults_faultfriction_hh
+#if !defined(pylith_faults_frictionslipweakening_hh)
+#define pylith_faults_frictionslipweakeningc_hh
 
 #include "faultsfwd.hh"                   // forward declarations
-#include "pylith/faults/FaultRheology.hh" // ISA FaultRheology
-#include "spatialdata/spatialdb/spatialdbfwd.hh" // USES SpatialDB
+#include "pylith/faults/FaultFriction.hh" // ISA FaultFriction
 
-class pylith::faults::FaultFriction : public pylith::faults::FaultRheology
+class pylith::faults::FrictionSlipWeakening : public pylith::faults::FaultFriction
 {
     friend class TestStaticFriction; // unit testing
 
     // PUBLIC METHODS /////////////////////////////////////////////////////////////////////////////
 public:
     /// Default constructor.
-    FaultFriction(void);
+    FrictionSlipWeakening(void);
 
     /// Destructor.
-    virtual ~FaultFriction(void);
+    ~FrictionSlipWeakening(void);
 
     /// Deallocate PETSc and local data structures.
     void deallocate(void);
 
-    /// Add rheology subfields to auxiliary field.
-    virtual void addAuxiliarySubfields(void);
-
-    /** Update kernel constants.
+    /** Get auxiliary factory associated with physics.
      *
-     * @param[inout] kernelConstants Array of constants used in integration kernels.
-     * @param[in] dt Current time step.
+     * @return Auxiliary factory for physics object.
      */
-    virtual
-    void updateKernelConstants(pylith::real_array* kernelConstants,
-                               const PylithReal dt) const;
+    pylith::faults::AuxiliaryFactoryRheology *getAuxiliaryFactory(void);
 
+    /// Add rheology subfields to auxiliary field.
+    void addAuxiliarySubfields(void);
+
+    /// Get f0u for positive side of fault.
+    PetscBdPointFunc getF0uKernel(void) const;
+
+    /// Get Jf0uu for positive side of fault.
+    PetscBdPointJac getJf0uuKernel(void) const;
 
     // PRIVATE MEMBERS ////////////////////////////////////////////////////////////////////////////
 private:
 
     pylith::faults::AuxiliaryFactoryRheology* _auxiliaryFactory; ///< Factory for creating auxiliary subfields.
 
+
     // NOT IMPLEMENTED ////////////////////////////////////////////////////////////////////////////
 private:
-    FaultFriction(const FaultFriction &);                  ///< Not implemented.
-    const FaultFriction &operator=(const FaultFriction &); /// Not implemented.
+    FrictionSlipWeakening(const FrictionSlipWeakening &);                  ///< Not implemented.
+    const FrictionSlipWeakening &operator=(const FrictionSlipWeakening &); /// Not implemented.
 
-}; // class FaultFriction
+}; // class FrictionSlipWeakening
 
-#endif // pylith_faults_faultfriction_hh
+#endif // pylith_faults_frictionslipweakening_hh
 
 // End of file

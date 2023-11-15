@@ -16,7 +16,7 @@
  * ----------------------------------------------------------------------
  */
 
-/** @file libsrc/fekernels/FrictionStatic`.hh
+/** @file libsrc/fekernels/FrictionSlipWeakening`.hh
  *
  * Kernels for static friction on a fault.
  *
@@ -52,8 +52,8 @@
  * @param[out] f0 [dim].
  */
 
-#if !defined(pylith_fekernels_frictionstatic_hh)
-#define pylith_fekernels_frictionstatic_hh
+#if !defined(pylith_fekernels_frictionslipweakening_hh)
+#define pylith_fekernels_frictionslipweakening_hh
 
 // Include directives ---------------------------------------------------
 #include "fekernelsfwd.hh" // forward declarations
@@ -64,12 +64,14 @@
 
 #include <cassert> // USES assert()
 
-class pylith::fekernels::FrictionStatic {
+class pylith::fekernels::FrictionSlipWeakening {
     // PUBLIC STRUCTS /////////////////////////////////////////////////////////////////////////////
 public:
 
     struct Context {
         PylithReal staticCoefficient;
+        PylithReal dynamicCoefficient;
+        PylithReal slipWeakeningCoefficient;
     };
 
     // PUBLIC METHODS /////////////////////////////////////////////////////////////////////////////
@@ -98,15 +100,19 @@ public:
                     const PylithScalar constants[]) {
         assert(context);
 
-        const PylithInt i_static = numA-2;
+        const PylithInt i_static = numA-3;
+        const PylithInt i_dynamic = numA-2;
+        const PylithInt i_slipWeakening = numA-1;
 
         assert(a);
         assert(aOff);
         assert(aOff[i_static] >= 0);
+        assert(aOff[i_dynamic] >= 0);
+        assert(aOff[i_slipWeakening] >= 0);
 
-        context->staticCoefficient = a[aOff[i_static]];
-        context->staticCoefficient = 0.6;
-        assert(context->staticCoefficient >= 0.0);
+        context->staticCoefficient = a[aOff[i_static]];assert(context->staticCoefficient >= 0.0);
+        context->dynamicCoefficient = a[aOff[i_dynamic]];assert(context->dynamicCoefficient >= 0.0);
+        context->slipWeakeningCoefficient = a[aOff[i_slipWeakening]];assert(context->slipWeakeningCoefficient >= 0.0);
     } // setContext
 
     // --------------------------------------------------------------------------------------------
@@ -123,13 +129,19 @@ public:
         assert(coefficient);
 
         Context* context = (Context*)(rheologyContext);
-        *coefficient = context->staticCoefficient;
+        PetscReal absSlip = abs(slip);
+        if (absSlip < context->slipWeakeningCoefficient) {
+          *coefficient = context->staticCoefficient - (context->staticCoefficient - context->dynamicCoefficient) * abs(slip)/context->slipWeakeningCoefficient;
+        }
+        else {
+            *coefficient = context->dynamicCoefficient;
+        }
     } // friction_coefficient
 
-    // --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
     // residual fu0
     static inline
-    void f0u(const PylithInt dim,
+    void fu0(const PylithInt dim,
                 const PylithInt numS,
                 const PylithInt numA,
                 const PylithInt sOff[],
@@ -154,45 +166,81 @@ public:
         pylith::fekernels::FaultFriction::setContext(&frictionContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
             t, x, n, numConstants, constants);
 
-        // create FrictionStatic context
-        pylith::fekernels::FrictionStatic::Context rheologyContext;
-        pylith::fekernels::FrictionStatic::setContext(&rheologyContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
+        // create FrictionSlipWeakening context
+        pylith::fekernels::FrictionSlipWeakening::Context rheologyContext;
+        pylith::fekernels::FrictionSlipWeakening::setContext(&rheologyContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
             t, x, n, numConstants, constants);
         
-        // call FaultFriction::f0u(), passing in FrictionStatic context
-        // Analogous to IsotropicLinearElasticity::f1v_infinitessimalStrain;
-        // instead of calling Elasticity::f1v we will call FaultFriction::f0u
-        pylith::fekernels::FaultFriction::f0u(frictionContext, &rheologyContext,frictionCoefficient, f0);
-    } // f0u
+        pylith::fekernels::FaultFriction::f0u(frictionContext,&rheologyContext,frictionCoefficient,f0);
+    } // fu0
 
 // --------------------------------------------------------------------------------------------
-    // Jacobian Jf0uu = 0
+    // Jacobian Jf0uu on positive side of fault: Jf0uu = 0
     static inline
     void Jf0uu(const PylithInt dim,
-        const PylithInt numS,
-        const PylithInt numA,
-        const PylithInt sOff[],
-        const PylithInt sOff_x[],
-        const PylithScalar s[],
-        const PylithScalar s_t[],
-        const PylithScalar s_x[],
-        const PylithInt aOff[],
-        const PylithInt aOff_x[],
-        const PylithScalar a[],
-        const PylithScalar a_t[],
-        const PylithScalar a_x[],
-        const PylithReal t,
-        const PylithReal s_tshift,
-        const PylithScalar x[],
-        const PylithReal n[],
-        const PylithInt numConstants,
-        const PylithScalar constants[],
-        PylithScalar Jf0[]) {
-        // do nothing
+                   const PylithInt numS,
+                   const PylithInt numA,
+                   const PylithInt sOff[],
+                   const PylithInt sOff_x[],
+                   const PylithScalar s[],
+                   const PylithScalar s_t[],
+                   const PylithScalar s_x[],
+                   const PylithInt aOff[],
+                   const PylithInt aOff_x[],
+                   const PylithScalar a[],
+                   const PylithScalar a_t[],
+                   const PylithScalar a_x[],
+                   const PylithReal t,
+                   const PylithReal s_tshift,
+                   const PylithScalar x[],
+                   const PylithReal n[],
+                   const PylithInt numConstants,
+                   const PylithScalar constants[],
+                   PylithScalar Jf0[]) {
+        assert(numS >= 2);
+        assert(Jf0);
+        assert(sOff);
+        assert(n);
+
+        // create FaultFriction context
+        pylith::fekernels::FaultFriction::Context frictionContext;
+        pylith::fekernels::FaultFriction::setContext(&frictionContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
+            t, x, n, numConstants, constants);
+
+        // create FrictionSlipWeakening context
+        pylith::fekernels::FrictionSlipWeakening::Context rheologyContext;
+        pylith::fekernels::FrictionSlipWeakening::setContext(&rheologyContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
+            t, x, n, numConstants, constants);
+
+
+        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+
+        const PylithInt ncols = spaceDim;
+        const PylithInt gOffN = 0;
+        const PylithInt gOffP = gOffN+spaceDim*spaceDim;
+
+        // compute slip in fault coords
+        PylithReal slipFaultCoords[2];
+        pylith::fekernels::FaultFriction::computeDiffFaultCoords(slipFaultCoords,spaceDim, frictionContext.dispN, frictionContext.dispP,frictionContext.n,frictionContext.refDir);
+        PylithReal slipMagTangent = (2 == spaceDim) ? fabs(slipFaultCoords[0]) : sqrt(pow(slipFaultCoords[0],2) + pow(slipFaultCoords[1],2));
+
+        // compute traction normal to fault
+        PylithReal lagrangeMultFaultCoords[2];
+        pylith::fekernels::BoundaryDirections::toTN(lagrangeMultFaultCoords,frictionContext.lagrangeMultGlobalCoords,frictionContext.n);
+        PylithReal tractionNormalFaultCoords = (2 == spaceDim) ? -lagrangeMultFaultCoords[1] : -lagrangeMultFaultCoords[2];
+
+        PetscReal dtau_dslip = (rheologyContext.staticCoefficient - rheologyContext.dynamicCoefficient) * tractionNormalFaultCoords / rheologyContext.slipWeakeningCoefficient;
+        if (slipMagTangent >= rheologyContext.slipWeakeningCoefficient) {
+            dtau_dslip = 0.0;
+        }
+        for (PylithInt i = 0; i < spaceDim; ++i) {
+            Jf0[gOffN+i*ncols+i] += dtau_dslip;
+            Jf0[gOffP+i*ncols+i] += dtau_dslip;
+        } // for
     } // Jf0uu
 
-}; // FrictionStatic`
+}; // FrictionSlipWeakening
 
-#endif // pylith_fekernels_frictionstatic_hh
+#endif // pylith_fekernels_frictionslipweakening_hh
 
 /* End of file */
