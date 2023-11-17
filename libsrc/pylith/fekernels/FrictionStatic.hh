@@ -105,7 +105,6 @@ public:
         assert(aOff[i_static] >= 0);
 
         context->staticCoefficient = a[aOff[i_static]];
-        context->staticCoefficient = 0.6;
         assert(context->staticCoefficient >= 0.0);
     } // setContext
 

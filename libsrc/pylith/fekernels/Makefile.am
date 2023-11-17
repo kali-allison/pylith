@@ -39,6 +39,7 @@ subpkginclude_HEADERS = \
 	FaultCohesiveDyn.hh \
 	FaultFriction.hh \
 	FrictionStatic.hh \
+	FrictionSlipWeakening.hh \
 	IsotropicLinearPoroelasticity.hh \
 	Poroelasticity.hh 
 	

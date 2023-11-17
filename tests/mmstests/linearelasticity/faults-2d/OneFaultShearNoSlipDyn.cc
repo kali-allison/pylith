@@ -138,7 +138,7 @@ class pylith::_OneFaultShearNoSlipDyn {
 
     // Solution subfields.
     static double strain_xx(void) {
-        return -0.4;
+        return -0.2;
     } // strain_xx
 
     static double strain_yy(const double x,
@@ -151,7 +151,8 @@ class pylith::_OneFaultShearNoSlipDyn {
     } // strain_yy
 
     static double strain_xy(void) {
-        return 0.3;
+        //return 0.3;
+        return 0;
     } // strain_xy
 
     // Displacement
@@ -222,7 +223,7 @@ class pylith::_OneFaultShearNoSlipDyn {
         const double lambda = density(x[0], x[1])*vp(x[0], x[1])*vp(x[0], x[1]) - 2*mu;
 
         const PylithScalar tanDir[2] = {-n[1], n[0] }; //tanDir[0]: The x-component of the tangent direction vector. tanDir[1]: The y-component of the tangent direction vector.
-        const PylithScalar tractionShear = strain_xy() * 2.0 * mu / 2.25e+10;
+        const PylithScalar tractionShear = -strain_xy() * 2.0 * mu / 2.25e+10;
         const PylithScalar tractionNormal = (lambda*strain_xx() + (lambda+2*mu)*strain_yy(x[0], x[1])) / 2.25e+10;
         r0[0] += tractionShear*tanDir[0] + tractionNormal*n[0];
         r0[1] += tractionShear*tanDir[1] + tractionNormal*n[1];

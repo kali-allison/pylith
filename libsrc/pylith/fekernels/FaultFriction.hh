@@ -71,6 +71,7 @@ public:
         PylithInt dim;
         PylithScalar t; // time
         PylithScalar dt; // time step
+        const PylithScalar* x; // coordinates of point evaluation
         const PylithScalar* n; // normal to fault
         const PylithScalar* refDir; // reference direction
         const PylithScalar* lagrangeMultGlobalCoords; // in global coordinates
@@ -87,6 +88,7 @@ public:
         dim(0),
         t(0.0),
         dt(0.0),
+        x(NULL),
         n(NULL),
         refDir(NULL),
         lagrangeMultGlobalCoords(NULL),
@@ -140,6 +142,7 @@ public:
         
         context->dim = dim;
         context->t = t;  
+        context->x = &x[0];
         context->n = &n[0];
         context->dt = constants[0]; 
         context->refDir = &constants[1]; 
@@ -155,7 +158,6 @@ public:
         context->velN = &s_t[sOffDispN];
         context->velP = &s_t[sOffDispP];
         
-        // the lagrange multipliers are the tractions on the fault
         const PylithInt sOffLagrange = sOff[numS-1];
         context->lagrangeMultGlobalCoords = &s[sOffLagrange];
 
@@ -243,6 +245,7 @@ public:
         PylithReal slipFaultCoords[2];
         computeDiffFaultCoords(slipFaultCoords,spaceDim, frictionContext.dispN, frictionContext.dispP,frictionContext.n,frictionContext.refDir);
         PylithReal slipMagTangent = (2 == spaceDim) ? fabs(slipFaultCoords[0]) : sqrt(pow(slipFaultCoords[0],2) + pow(slipFaultCoords[1],2));
+        PylithReal slipMagNormal = (2 == spaceDim) ? fabs(slipFaultCoords[1]) : slipFaultCoords[2];
         PylithReal slipVelFaultCoords[2];
         computeDiffFaultCoords(slipVelFaultCoords,spaceDim, frictionContext.dispN, frictionContext.dispP,frictionContext.n,frictionContext.refDir);
         PylithReal slipVelMagTangent = (2 == spaceDim) ? abs(slipVelFaultCoords[0]) : sqrt(pow(slipVelFaultCoords[0],2) + pow(slipVelFaultCoords[1],2));
@@ -256,7 +259,8 @@ public:
         pylith::fekernels::BoundaryDirections::toTN(lagrangeMultFaultCoords,frictionContext.lagrangeMultGlobalCoords,frictionContext.n);
         PylithReal tractionNormalFaultCoords = (2 == spaceDim) ? -lagrangeMultFaultCoords[1] : -lagrangeMultFaultCoords[2];
         PylithReal frictionMag;
-        if (0.0 == frictionContext.opening) {
+        //if (0.0 == frictionContext.opening) {
+        if (0.0 == slipMagNormal) {
             frictionMag = frictionContext.cohesion - frictionCoef * tractionNormalFaultCoords;
         } else if (!frictionContext.openFreeSurface) {
             frictionMag = frictionContext.cohesion;
@@ -286,6 +290,13 @@ public:
             pylith::fekernels::BoundaryDirections::toTN(lagrangeMultFaultCoords,context.lagrangeMultGlobalCoords,context.n);
             PylithReal a = frictionMag - lagrangeMultFaultCoords[0];
             tractionFrictionFaultCoords[0] = a/sqrt(a*a) * frictionMag;
+            if (a == 0.0) { 
+                tractionFrictionFaultCoords[0] = frictionMag;
+            }
+            else {
+                tractionFrictionFaultCoords[0] = a/sqrt(a*a) * frictionMag;
+            }
+            
         }
         else {
             tractionFrictionFaultCoords[0] = -slipVelFaultCoords[0]/fabs(slipVelMagTangent) * frictionMag;
@@ -347,8 +358,8 @@ public:
             for (PylithInt i = 0; i < spaceDim; ++i) {
                 PylithReal val = tractionFrictionGlobalCoords[i] - frictionContext.lagrangeMultGlobalCoords[i];
                 assert(!isnan(val));
-                f0[offN + i] += -val; // was - val
-                f0[offP + i] += -val; // was + val
+                f0[offN + i] += +val;
+                f0[offP + i] += -val;
             }
             break;
         }
@@ -363,8 +374,8 @@ public:
             for (PylithInt i = 0; i < spaceDim; ++i) {
                 PylithReal val = tractionFrictionGlobalCoords[i] - frictionContext.lagrangeMultGlobalCoords[i];
                 assert(!isnan(val));
-                f0[offN + i] += -val;
-                f0[offP + i] += +val;
+                f0[offN + i] += +val;
+                f0[offP + i] += -val;
             }
             break;
         }

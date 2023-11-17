@@ -458,5 +458,21 @@ TEST_CASE("OneFaultShearNoSlipDyn::QuadQ3::testJacobianFiniteDiff", "[OneFaultSh
     pylith::TestFault(pylith::OneFaultShearNoSlipDyn::QuadQ3()).testJacobianFiniteDiff();
 }
 // ------------------------------------------------------------------------------------------------
+/*
+#include "OneFaultShearNoSlipDyn_simple.hh"
 
+// QuadQ1
+TEST_CASE("OneFaultShearNoSlipDyn_simple::QuadQ1::testDiscretization", "[OneFaultShearNoSlipDyn_simple][QuadQ1][discretization]") {
+    pylith::TestFault(pylith::OneFaultShearNoSlipDyn_simple::QuadQ1()).testDiscretization();
+}
+TEST_CASE("OneFaultShearNoSlipDyn_simple::QuadQ1::testResidual", "[OneFaultShearNoSlipDyn_simple][QuadQ1][residual]") {
+    pylith::TestFault(pylith::OneFaultShearNoSlipDyn_simple::QuadQ1()).testResidual();
+}
+TEST_CASE("OneFaultShearNoSlipDyn_simple::QuadQ1::testJacobianTaylorSeries", "[OneFaultShearNoSlipDyn_simple][QuadQ1][Jacobian Taylor series]") {
+    pylith::TestFault(pylith::OneFaultShearNoSlipDyn_simple::QuadQ1()).testJacobianTaylorSeries();
+}
+TEST_CASE("OneFaultShearNoSlipDyn_simple::QuadQ1::testJacobianFiniteDiff", "[OneFaultShearNoSlipDyn_simple][QuadQ1][Jacobian finite difference]") {
+    pylith::TestFault(pylith::OneFaultShearNoSlipDyn_simple::QuadQ1()).testJacobianFiniteDiff();
+}
+*/
 // End of file

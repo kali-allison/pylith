@@ -25,7 +25,8 @@ TESTS = \
 	run_ThreeBlocksStatic.sh \
 	run_OneFaultShearNoSlip.sh \
 	run_TwoFaultsShearNoSlip.sh \
-	run_OneFaultShearNoSlipDyn.sh 
+	run_OneFaultShearNoSlipDyn.sh
+	
 
 check_SCRIPTS = $(TESTS)
 
@@ -55,6 +56,7 @@ dist_noinst_HEADERS = \
 	OneFaultShearNoSlip.hh \
 	TwoFaultsShearNoSlip.hh \
 	OneFaultShearNoSlipDyn.hh
+	
 
 
 dist_noinst_DATA = \

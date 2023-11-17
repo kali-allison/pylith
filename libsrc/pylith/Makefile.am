@@ -50,6 +50,7 @@ libpylith_la_SOURCES = \
 	faults/FaultRheology.cc \
 	faults/FaultFriction.cc \
 	faults/FrictionStatic.cc \
+	faults/FrictionSlipWeakening.cc \
 	faults/KinSrc.cc \
 	faults/KinSrcStep.cc \
 	faults/KinSrcRamp.cc \

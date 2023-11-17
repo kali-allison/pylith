@@ -29,6 +29,7 @@ subpkginclude_HEADERS = \
 	AuxiliaryFactoryRheology.hh \
 	FaultRheology.hh \
 	FaultFriction.hh \
+	FrictionSlipWeakening.hh \
 	FrictionStatic.hh \
 	FaultOps.hh \
 	KinSrc.hh \
