@@ -463,11 +463,17 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
         const PetscBdPointJac Jf2ll = NULL;
         const PetscBdPointJac Jf3ll = NULL; 
 
-        kernels.resize(5);
+        kernels.resize(3);
         const char* nameDisplacement = "displacement";
         const char* nameLagrangeMultiplier = "lagrange_multiplier_fault";
+         kernels[0] = JacobianKernels(nameDisplacement, nameLagrangeMultiplier, integrator_t::LHS,
+                                     integrator_t::NEGATIVE_FACE, Jf0ul_neg, Jf1ul_neg, Jf2ul_neg, Jf3ul_neg);
+        kernels[1] = JacobianKernels(nameDisplacement, nameLagrangeMultiplier, integrator_t::LHS,
+                                     integrator_t::POSITIVE_FACE, Jf0ul_pos, Jf1ul_pos, Jf2ul_pos, Jf3ul_pos);
+        kernels[2] = JacobianKernels(nameLagrangeMultiplier, nameDisplacement, integrator_t::LHS,
+                                     integrator_t::FAULT_FACE, Jf0lu, Jf1lu, Jf2lu, Jf3lu);
 
-        kernels[0] = JacobianKernels(nameDisplacement, nameDisplacement, integrator_t::LHS,
+        /*kernels[0] = JacobianKernels(nameDisplacement, nameDisplacement, integrator_t::LHS,
                                      integrator_t::FAULT_FACE, Jf0uu, Jf1uu, Jf2uu, Jf3uu);
         kernels[1] = JacobianKernels(nameDisplacement, nameLagrangeMultiplier, integrator_t::LHS,
                                      integrator_t::NEGATIVE_FACE, Jf0ul_neg, Jf1ul_neg, Jf2ul_neg, Jf3ul_neg);
@@ -476,7 +482,7 @@ pylith::faults::FaultCohesiveDyn::_setKernelsJacobian(pylith::feassemble::Integr
         kernels[3] = JacobianKernels(nameLagrangeMultiplier, nameDisplacement, integrator_t::LHS,
                                      integrator_t::FAULT_FACE, Jf0lu, Jf1lu, Jf2lu, Jf3lu);
         kernels[4] = JacobianKernels(nameLagrangeMultiplier, nameLagrangeMultiplier, integrator_t::LHS,
-                                     integrator_t::FAULT_FACE, Jf0ll, Jf1ll, Jf2ll, Jf3ll);
+                                     integrator_t::FAULT_FACE, Jf0ll, Jf1ll, Jf2ll, Jf3ll);*/
         break;
     } // QUASISTATIC
     case pylith::problems::Physics::DYNAMIC_IMEX: {

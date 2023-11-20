@@ -395,20 +395,6 @@ public:
         assert(Jf0);
         assert(sOff);
         assert(n);
-    
-        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
-        const PylithInt ncols = spaceDim;
-
-        // displacement on + and - sides of fault
-        const PylithInt i_disp = 0;
-        const PylithInt sOffDispN = sOff[i_disp];
-        const PylithInt sOffDispP = sOffDispN+spaceDim;
-        const PylithScalar* dispN = &s[sOffDispN];
-        const PylithScalar* dispP = &s[sOffDispP];
-        
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*ncols+i] += (dispP[i] - dispN[i]);
-        } // for
         
     }
 
@@ -493,81 +479,6 @@ public:
             f0[i] += lagrange[i] + traction[i];
         } // for
     } // f0l_pos
-/*
-    // ------------------------------------------------------------------------------------------------
-    // Jf0 function for dynamic slip constraint equation for negative side of the fault.
-    static inline
-    void Jf0ll_neg(const PylithInt dim,
-                   const PylithInt numS,
-                   const PylithInt numA,
-                   const PylithInt sOff[],
-                   const PylithInt sOff_x[],
-                   const PylithScalar s[],
-                   const PylithScalar s_t[],
-                   const PylithScalar s_x[],
-                   const PylithInt aOff[],
-                   const PylithInt aOff_x[],
-                   const PylithScalar a[],
-                   const PylithScalar a_t[],
-                   const PylithScalar a_x[],
-                   const PylithReal t,
-                   const PylithReal s_tshift,
-                   const PylithScalar x[],
-                   const PylithReal n[],
-                   const PylithInt numConstants,
-                   const PylithScalar constants[],
-                   PylithScalar Jf0[]) {
-        assert(numS >= 1);
-        assert(a);
-
-        assert(numS >= 2);
-        assert(Jf0);
-        assert(sOff);
-
-        const PylithInt spaceDim = dim+1; // :KLUDGE: dim passed in is spaceDim-1
-
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*spaceDim+i] += -1.0;
-        } // for
-    } // Jf0ll_neg
-
-    // ------------------------------------------------------------------------------------------------
-    // Jf0 function for dynamic slip constraint equation for positive side of the fault.
-    static inline
-    void Jf0ll_pos(const PylithInt dim,
-                   const PylithInt numS,
-                   const PylithInt numA,
-                   const PylithInt sOff[],
-                   const PylithInt sOff_x[],
-                   const PylithScalar s[],
-                   const PylithScalar s_t[],
-                   const PylithScalar s_x[],
-                   const PylithInt aOff[],
-                   const PylithInt aOff_x[],
-                   const PylithScalar a[],
-                   const PylithScalar a_t[],
-                   const PylithScalar a_x[],
-                   const PylithReal t,
-                   const PylithReal s_tshift,
-                   const PylithScalar x[],
-                   const PylithReal n[],
-                   const PylithInt numConstants,
-                   const PylithScalar constants[],
-                   PylithScalar Jf0[]) {
-        assert(numS >= 1);
-        assert(a);
-
-        assert(numS >= 2);
-        assert(Jf0);
-        assert(sOff);
-
-        const PylithInt spaceDim = dim+1; // :KLUDGE: dim passed in is spaceDim-1
-
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*spaceDim+i] += 1.0;
-        } // for
-    } // Jf0ll_pos
-*/
 }; // FaultCohesiveDyn
 
 #endif // pylith_fekernels_faultcohesivedyn_hh
