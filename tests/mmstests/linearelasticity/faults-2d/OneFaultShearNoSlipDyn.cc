@@ -129,6 +129,7 @@ class pylith::_OneFaultShearNoSlipDyn {
     {
         //return 2.25e7;
         return 2.25e9;
+        //return 0;
     } // cohesion
 
     static const char *cohesion_units(void)
@@ -151,8 +152,8 @@ class pylith::_OneFaultShearNoSlipDyn {
     } // strain_yy
 
     static double strain_xy(void) {
-        //return 0.3;
-        return 0;
+        return 0.15; // can pass testResidual with this
+        //return 0; // can pass testResidual with this
     } // strain_xy
 
     // Displacement
@@ -259,11 +260,6 @@ class pylith::_OneFaultShearNoSlipDyn {
         assert(2 == numComponents);
         assert(s);
 
-        // original implementation
-        //s[0] = faulttraction_x(x[0], x[1]);
-        //[1] = faulttraction_y(x[0], x[1]);
-
-        // new version
         s[0] = -faulttraction_x(x[0], x[1]);
         s[1] = allowableFrictionTraction(x[0], x[1]) - faulttraction_y(x[0], x[1]);
 
@@ -278,7 +274,8 @@ public:
 
         data->journalName = "OneFaultShearNoSlipDyn";
 
-        data->isJacobianLinear = true;
+        //data->isJacobianLinear = true;
+        data->isJacobianLinear = false;
 
         data->meshFilename = ":UNKNOWN:"; // Set in child class.
 

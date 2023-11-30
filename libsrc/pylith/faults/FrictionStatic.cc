@@ -96,5 +96,12 @@ pylith::faults::FrictionStatic::getJf0uuKernel(void) const {
     return pylith::fekernels::FrictionStatic::Jf0uu;
 }
 
+// ------------------------------------------------------------------------------------------------
+// return Jacobian kernal Jf0ul
+PetscBdPointJac
+pylith::faults::FrictionStatic::getJf0ulKernel(void) const {
+    return pylith::fekernels::FrictionStatic::Jf0ul;
+}
+
 
 // End of file

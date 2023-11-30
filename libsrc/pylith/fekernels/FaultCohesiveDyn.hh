@@ -80,6 +80,30 @@ public:
     // PUBLIC METHODS /////////////////////////////////////////////////////////////////////////////
 public:
 
+    static inline
+    bool checkIfSliding(const PylithInt dim,
+                        const PylithInt sOff[],
+                        const PylithScalar s_t[]) {
+        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+
+        // velocity on neg and pos sides of fault
+        const PylithInt i_disp = 0;
+        const PylithInt sOffDispN = sOff[i_disp];
+        const PylithInt sOffDispP = sOffDispN+spaceDim;
+        const PylithScalar* velN = &s_t[sOffDispN];
+        const PylithScalar* velP = &s_t[sOffDispP];
+
+        // compute difference between neg and pos sides of fault
+        bool isSliding = false;
+        for (PylithInt i = 0; i < spaceDim; ++i) {
+            PylithScalar val = velP[i] - velN[i];
+            if (val != 0.0) {
+                isSliding = true;
+            }
+        } // for
+        return isSliding;
+    }
+
     // --------------------------------------------------------------------------------------------
     /** f0 function for slip constraint equation: f0\lambda = lambda * (u^+ - u^-)
      *
@@ -115,8 +139,8 @@ public:
         assert(numA >= 1);
 
         const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+        
         const PylithInt i_disp = 0;
-
         const PylithInt sOffDispN = sOff[i_disp];
         const PylithInt sOffDispP = sOffDispN+spaceDim;
         const PylithInt fOffLagrange = 0;
@@ -124,14 +148,39 @@ public:
         const PylithScalar* dispN = &s[sOffDispN];
         const PylithScalar* dispP = &s[sOffDispP];
 
+        /*for (PylithInt i = 0; i < spaceDim; ++i) {
+            f0[fOffLagrange+i] += (dispP[i] - dispN[i]); // if locked
+            assert(!isnan(f0[fOffLagrange+i]));
+        }*/ // for
+
         const PylithInt sOffLagrange = sOff[numS-1];
         const PylithScalar* lagrange = &s[sOffLagrange];
-
         for (PylithInt i = 0; i < spaceDim; ++i) {
-                f0[fOffLagrange+i] += lagrange[i] * (dispP[i] - dispN[i]);
-                assert(!isnan(f0[fOffLagrange+i]));
+            f0[fOffLagrange+i] += lagrange[i]*(dispP[i] - dispN[i]);
+            assert(!isnan(f0[fOffLagrange+i]));
         } // for
-    }
+        PetscScalar slipx = dispP[0] - dispN[0];
+        PetscScalar slipy = dispP[1] - dispN[1];
+
+        
+
+        /*bool isSliding = checkIfSliding(dim, sOff, s_t);
+        if (isSliding) {
+            const PylithInt sOffLagrange = sOff[numS-1];
+            const PylithScalar* lagrange = &s[sOffLagrange];
+            for (PylithInt i = 0; i < spaceDim; ++i) {
+                f0[fOffLagrange+i] += lagrange[i];
+                assert(!isnan(f0[fOffLagrange+i]));
+            } // for
+        } // if
+        else {
+            for (PylithInt i = 0; i < spaceDim; ++i) {
+                f0[fOffLagrange+i] += (dispP[i] - dispN[i]); // if locked
+                assert(!isnan(f0[fOffLagrange+i]));
+            } // for
+        }*/ // else
+        
+    } // f0l_slip
 
     // --------------------------------------------------------------------------------------------
     /** f0 function for slip acceleration constraint equation: f0\lambda = (\dot{v}^+ - \dot{v}^-) - \ddot{d}
@@ -202,128 +251,6 @@ public:
         } // switch
     }
 
-// --------------------------------------------------------------------------------------------
-    /** Jf0 function for displacement equation: +1 (neg side).
-     */
-    static inline
-    void Jf0ul_neg(const PylithInt dim,
-                   const PylithInt numS,
-                   const PylithInt numA,
-                   const PylithInt sOff[],
-                   const PylithInt sOff_x[],
-                   const PylithScalar s[],
-                   const PylithScalar s_t[],
-                   const PylithScalar s_x[],
-                   const PylithInt aOff[],
-                   const PylithInt aOff_x[],
-                   const PylithScalar a[],
-                   const PylithScalar a_t[],
-                   const PylithScalar a_x[],
-                   const PylithReal t,
-                   const PylithReal s_tshift,
-                   const PylithScalar x[],
-                   const PylithReal n[],
-                   const PylithInt numConstants,
-                   const PylithScalar constants[],
-                   PylithScalar Jf0[]) {
-        assert(numS >= 2);
-        assert(Jf0);
-        assert(sOff);
-        assert(n);
-
-        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
-        const PylithInt ncols = spaceDim;
-        
-        // if no sliding
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*ncols+i] += -1.0; // neg side
-        } // for
-
-        // if sliding then do nothing (equal to 0)
-    } // Jf0ul_neg
-
-    // --------------------------------------------------------------------------------------------
-    /** Jf0 function for displacement equation: +1 (neg and pos sides).
-     */
-    static inline
-    void Jf0ul_pos(const PylithInt dim,
-                   const PylithInt numS,
-                   const PylithInt numA,
-                   const PylithInt sOff[],
-                   const PylithInt sOff_x[],
-                   const PylithScalar s[],
-                   const PylithScalar s_t[],
-                   const PylithScalar s_x[],
-                   const PylithInt aOff[],
-                   const PylithInt aOff_x[],
-                   const PylithScalar a[],
-                   const PylithScalar a_t[],
-                   const PylithScalar a_x[],
-                   const PylithReal t,
-                   const PylithReal s_tshift,
-                   const PylithScalar x[],
-                   const PylithReal n[],
-                   const PylithInt numConstants,
-                   const PylithScalar constants[],
-                   PylithScalar Jf0[]) {
-        assert(numS >= 2);
-        assert(Jf0);
-        assert(sOff);
-        assert(n);
-
-        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
-        const PylithInt ncols = spaceDim;
-        
-        // if no sliding
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*ncols+i] += +1.0; // pos side
-        } // for
-
-        // if sliding then do nothing (equal to 0)
-    } // Jf0ul_pos
-
-    /** Jf0 function for displacement equation on positive and negative sides
-     */
-    static inline
-    void Jf0ul(const PylithInt dim,
-                   const PylithInt numS,
-                   const PylithInt numA,
-                   const PylithInt sOff[],
-                   const PylithInt sOff_x[],
-                   const PylithScalar s[],
-                   const PylithScalar s_t[],
-                   const PylithScalar s_x[],
-                   const PylithInt aOff[],
-                   const PylithInt aOff_x[],
-                   const PylithScalar a[],
-                   const PylithScalar a_t[],
-                   const PylithScalar a_x[],
-                   const PylithReal t,
-                   const PylithReal s_tshift,
-                   const PylithScalar x[],
-                   const PylithReal n[],
-                   const PylithInt numConstants,
-                   const PylithScalar constants[],
-                   PylithScalar Jf0[]) {
-        assert(numS >= 2);
-        assert(Jf0);
-        assert(sOff);
-        assert(n);
-
-        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
-        const PylithInt ncols = spaceDim;
-        const PylithInt nrows = 2*spaceDim;
-        
-        // if no sliding
-        for (PylithInt i = 0; i < spaceDim; ++i) {
-            Jf0[i*ncols+i] += -1.0; // neg side
-            Jf0[i*nrows+ncols+i] += +1.0; // pos side
-        } // for
-
-        // if sliding then do nothing (equal to 0)
-    } // Jf0ul
-
-
     // --------------------------------------------------------------------------------------------
     /** Jf0 function for slip constraint equation: +\lambda (pos side), -\lambda (neg side).
      *
@@ -360,11 +287,25 @@ public:
         const PylithInt gOffN = 0;
         const PylithInt gOffP = gOffN + spaceDim * ncols;
 
-        // if no sliding
-        for (PylithInt i = 0; i < spaceDim; ++i) {
+        /*for (PylithInt i = 0; i < spaceDim; ++i) {
             Jf0[gOffN+i*ncols+i] += -1; // neg side
             Jf0[gOffP+i*ncols+i] += +1; // pos side
+        }*/ // for
+
+        const PylithInt sOffLagrange = sOff[numS-1];
+        const PylithScalar* lagrange = &s[sOffLagrange];
+        for (PylithInt i = 0; i < spaceDim; ++i) {
+            //Jf0[gOffN+i*ncols+i] += -lagrange[i]; // neg side
+            //Jf0[gOffP+i*ncols+i] += +lagrange[i]; // pos side
         } // for
+
+        /*bool isSliding = checkIfSliding(dim, sOff, s_t);
+        if (!isSliding) {
+            for (PylithInt i = 0; i < spaceDim; ++i) {
+                Jf0[gOffN+i*ncols+i] += -1; // neg side
+                Jf0[gOffP+i*ncols+i] += +1; // pos side
+            } // for
+        }*/ // if
     }
 
 // --------------------------------------------------------------------------------------------
@@ -394,7 +335,30 @@ public:
         assert(numS >= 2);
         assert(Jf0);
         assert(sOff);
-        assert(n);
+        assert(s_t);
+
+        const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+        const PylithInt ncols = spaceDim;
+        
+        const PylithInt i_disp = 0;
+        const PylithInt sOffDispN = sOff[i_disp];
+        const PylithInt sOffDispP = sOffDispN+spaceDim;
+
+        const PylithScalar* dispN = &s[sOffDispN];
+        const PylithScalar* dispP = &s[sOffDispP];
+
+        for (PylithInt i = 0; i < spaceDim; ++i) {
+            Jf0[i*ncols+i] += dispP[i] - dispN[i];
+        } // for
+        
+        /*bool isSliding = checkIfSliding(dim, sOff, s_t);
+        if (isSliding) {
+            assert(0);
+            for (PylithInt i = 0; i < spaceDim; ++i) {
+                Jf0[i*ncols+i] += 1;
+            } // for
+        }*/ // if
+        // else entries are 0
         
     }
 

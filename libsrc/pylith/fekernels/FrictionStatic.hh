@@ -190,6 +190,46 @@ public:
         // do nothing
     } // Jf0uu
 
+
+    // Jacobian Jf0ul
+    static inline
+    void Jf0ul(const PylithInt dim,
+        const PylithInt numS,
+        const PylithInt numA,
+        const PylithInt sOff[],
+        const PylithInt sOff_x[],
+        const PylithScalar s[],
+        const PylithScalar s_t[],
+        const PylithScalar s_x[],
+        const PylithInt aOff[],
+        const PylithInt aOff_x[],
+        const PylithScalar a[],
+        const PylithScalar a_t[],
+        const PylithScalar a_x[],
+        const PylithReal t,
+        const PylithReal s_tshift,
+        const PylithScalar x[],
+        const PylithReal n[],
+        const PylithInt numConstants,
+        const PylithScalar constants[],
+        PylithScalar Jf0[]) {
+            // create FaultFriction context
+        pylith::fekernels::FaultFriction::Context frictionContext;
+        pylith::fekernels::FaultFriction::setContext(&frictionContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
+            t, x, n, numConstants, constants);
+
+        // create FrictionStatic context
+        pylith::fekernels::FrictionStatic::Context rheologyContext;
+        pylith::fekernels::FrictionStatic::setContext(&rheologyContext, dim, numS, numA, sOff, sOff_x, s, s_t, s_x, aOff, aOff_x, a, a_t, a_x,
+            t, x, n, numConstants, constants);
+        
+        // call FaultFriction::f0u(), passing in FrictionStatic context
+        // Analogous to IsotropicLinearElasticity::f1v_infinitessimalStrain;
+        // instead of calling Elasticity::f1v we will call FaultFriction::f0u
+        pylith::fekernels::FaultFriction::Jf0ul(frictionContext, &rheologyContext,frictionCoefficient, Jf0);
+        
+    } // Jf0ul
+
 }; // FrictionStatic`
 
 #endif // pylith_fekernels_frictionstatic_hh

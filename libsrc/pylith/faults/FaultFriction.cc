@@ -70,8 +70,9 @@ pylith::faults::FaultFriction::updateKernelConstants(pylith::real_array* kernelC
      
     if (9 != kernelConstants->size()) { kernelConstants->resize(9);}
     (*kernelConstants)[6] = dt;//dt;
-    (*kernelConstants)[7] = 0; // opening
-    (*kernelConstants)[8] = 1; // openFreeSurface
+    (*kernelConstants)[7] = 14;//1e-14; // tolerance
+    (*kernelConstants)[8] = 150; // openFreeSurface
+    assert(0);
 
     PYLITH_METHOD_END;
 } // updateKernelConstants

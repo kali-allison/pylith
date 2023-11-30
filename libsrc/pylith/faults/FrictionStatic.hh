@@ -58,11 +58,14 @@ public:
     /// Add rheology subfields to auxiliary field.
     void addAuxiliarySubfields(void);
 
-    /// Get f0u for fault.
+    // Get f0u for fault.
     PetscBdPointFunc getF0uKernel(void) const;
 
-    /// Get Jf0uu for fault.
+    // Get Jf0uu for fault.
     PetscBdPointJac getJf0uuKernel(void) const;
+
+    // Get Jf0ul for fault.
+    PetscBdPointJac getJf0ulKernel(void) const;
 
     // PRIVATE MEMBERS ////////////////////////////////////////////////////////////////////////////
 private:

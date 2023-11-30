@@ -96,9 +96,13 @@ public:
     virtual
     PetscBdPointFunc getF0uKernel(void) const = 0;
 
-    /// Get Jf0uu for fault.
+    // Get Jf0uu for fault.
     virtual
     PetscBdPointJac getJf0uuKernel(void) const = 0;
+
+    // Get Jf0ul for fault.
+    virtual
+    PetscBdPointJac getJf0ulKernel(void) const = 0;
 
     // PROTECTED MEMBERS //////////////////////////////////////////////////////////////////////////
 
